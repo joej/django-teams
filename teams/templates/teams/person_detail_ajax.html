@@ -1,0 +1,61 @@
+{% load i18n %}
+
+{% with images=object.images.all %}
+{% if images %}
+<div class="player left_images">
+    {% for image in images %}
+        <a href="{{ image.get_display_url }}" class="fancybox" title="{{ object.name }}"><img src="{{ image.get_thumbnail_url }}" alt="{% if image.caption %}{{ image.caption }}{% endif %}"/></a>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="body_props">
+	<span class="desciption">{{ object.description|safe }}</span>
+
+	{% if external_url %}
+	<div class="external">
+		<a class="iframe fancybox" href="{{ external_url }}">{{ object.external_description }}</a>
+	</div>
+	{% endif %}
+
+    <table class="team">
+        {% if object.birthdate %}<tr><td>Alter</td><td>{{ object.birthdate|timesince }}</td></tr>{% endif %}
+        {% if object.height %}<tr><td>Grösse</td><td>{{ object.height }}</td></tr>{% endif %}
+        {% if object.weight %}<tr><td>Gewicht</td><td>{{ object.weight }}</td></tr>{% endif %}
+
+		<tr>
+			<td>Position</td>
+			<td>
+				{% for player in object.pplayers.all %}
+					{% for position in player.positions.all %}
+						{% if not forloop.first %}, {% endif %}{{ position }}
+					{% endfor %}
+				{% endfor %}
+				{% for staff in object.pstaff.all %}
+					{% if not forloop.first %}, {% endif %}{{ staff.function }}
+				{% endfor %}
+			</td>
+		</tr>
+
+		{% if object.player_teams.all or object.staff_teams.all %}
+		<tr>
+			<td>Teams</td>
+			<td>
+			{% for team in object.player_teams.all %}
+				{% if not forloop.first %}, {% endif %}<a href="{% url team_detail team.slug %}">{{ team.name }}</a>{% if object.staff_teams.all %} (Spieler){% endif %}
+			{% endfor %}
+			{% if object.player_teams.all and object.staff_teams.all %}, {% endif %}
+			{% for team in object.staff_teams.all %}
+				{% if not forloop.first %}, {% endif %}<a href="{% url team_detail team.slug %}">{{ team.name }}</a>{% if object.player_teams.all %} (Betreuer){% endif %}
+			{% endfor %}
+			</td>
+		</tr>
+		{% endif %}
+
+        {% for prop in object.properties.all %}
+        <tr><td>{{ prop.key }}</td><td>{{ prop.value }}</td></tr>
+        {% endfor %}
+    </table>
+	<span style="clear:left" />
+</div>

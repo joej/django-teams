@@ -1,0 +1,62 @@
+{% extends "teams/team_base.html" %}
+
+{% load i18n %}
+{% load easy_thumbnail %}
+
+{% block breadcrumb %}
+<li><span class="divider">/</span><a href="{% url team_person_detail object.slug %}">{{ object.first_name }} {{ object.last_name }}</a></li>
+{% endblock %}
+
+{% block content %}
+	<div class="span8">
+        <div class="page-header">
+            <h1>{{ object.first_name }} {{ object.last_name }}</h1>
+        </div>
+
+        {% with image=object.personimage_set.all|first %}
+        {% if image %}
+        <ul class="thumbnails">
+            <li class="span3">
+                <a href="{% easy_thumbnail image.image.file 500x500 %}" class="thumbnail fancybox">
+                    <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 260x180 crop subject_location=image.image.subject_location %}" />
+                </a>
+            </li>
+        </ul>
+        {% endif %}
+        {% endwith %}
+        
+		{% with attributes=object.attributes %}
+		{% include "teams/attributes.html" %}
+  		{% endwith %}
+
+  		{{ object.html_content|safe }}
+	</div>
+
+	<div class="span4">
+		{% with players=object.player_squad.all %}
+		{% with staffs=object.staff_squad.all %}
+		{% if players or staffs or contacts %}
+		<h3>Teams</h3>
+		
+		{% if players %}
+		<dl>
+			<dt>als Spieler</dt>
+		{% for squad in players %}
+			<dd><a href="{% url squad_detail squad.slug %}">{{ squad }}</a></dd>
+		{% endfor %}
+		</dl>
+		{% endif %}
+
+		{% if staffs %}
+		<dl>
+			<dt>als Betreuer</dt>
+		{% for squad in staffs %}
+			<dd><a href="{% url squad_detail squad.slug %}">{{ squad }}</a></dd>
+		{% endfor %}
+		</dl>
+		{% endif %}
+		{% endif %}
+		{% endwith %}
+		{% endwith %}
+	</div>
+{% endblock %}

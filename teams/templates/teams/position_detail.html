@@ -1,0 +1,38 @@
+{% extends "teams/team_base.html" %}
+
+{% load i18n %}
+
+{% block breadcrumb %}
+<li><span class="divider">/</span><a href="">{{ object.name }}</a></li>
+{% endblock %}
+
+{% block content %}
+    <div class="span10">
+        <h2>Position: {{ object.name }}</h2>
+
+        {% with players=object.player_set.all %}
+        {% if players %}
+
+        {% regroup players by squad as squad_list %}
+
+        {% for squad in squad_list %}
+        <h3>{{ squad.grouper }}</h3>
+
+        <ul class="thumbnails">
+            {% for item in squad.list %}
+            <li class="span2">
+                <div class="thumbnail">
+                    <div align="center">
+                        <a rel="popover" href="{% url team_person_detail item.person.slug %}" data-original-title="Dressnummer" data-content="#{{ item.number }}">{{ item.person }}</a>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+
+        {% endif %}
+
+        {% endwith %}
+    </div>
+{% endblock %}

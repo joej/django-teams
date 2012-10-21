@@ -1,0 +1,41 @@
+{% load i18n js %}
+
+<h2>{{ object.name }}</h2>
+<div class="team short_desription">{{ object.short_description }}</div>
+<div class=="team description">{{ object.description|safe }}</div>
+
+{% if object.external_url %}
+<a class="iframe fancybox" href="{{ object.external_url }}">{{ object.external_description }}</a>
+{% endif %}
+
+<div class="team images">
+{% for image in object.images.all %}
+        <a href="{{ image.get_display_url }}" class="fancybox" title="{{ object.name }}">
+                <img src="{{ image.get_inline_url }}" alt="{% if image.caption %}{{ image.caption }}{% endif %}"/>
+        </a>
+{% endfor %}
+</div>
+        
+{% if object.player_set.all %}
+<h2>Spieler</h2>
+<div id="markup">
+        <table id="players" class="team players">
+                <thead>
+                        <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th></th>
+                        </tr>
+                </thead>
+                <tbody>
+        {% for player in object.player_set.all %}
+                        <tr class="{% cycle odd,even %}">
+                                <td><a href="{% url player_detail player.slug %}">{{ player.short_description }}</a></td>
+                                <td><a href="{% url player_detail player.slug %}">{{ player.prename }} {{ player.name }}</a></td>
+                                <td>{% for team in player.hiddenTeams %}{% if not forloop.first %}, {% endif %}{{ team.name }}{% endfor %}</td>
+                        </tr>
+        {% endfor %}
+                </tbody>
+        </table>
+</div>
+{% endif %}	

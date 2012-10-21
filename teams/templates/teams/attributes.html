@@ -1,0 +1,11 @@
+<dl>
+	{% if attributes.birthdate %}
+	<dt>Geburtsdatum</dt><dd>{{ attributes.birthdate }}</dd>
+	{% endif %}
+	{% if attributes.height %}
+	<dt>Grösse</dt><dd>{{ attributes.height }}</dd>
+	{% endif %}
+	{% if attributes.weight %}
+	<dt>Gewicht</dt><dd>{{ attributes.weight }}</dd>
+	{% endif %}
+</dl>
