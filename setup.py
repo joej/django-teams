@@ -11,7 +11,7 @@ root_dir = os.path.dirname(__file__)
 if root_dir:
     os.chdir(root_dir)
 
-for dirpath, dirnames, filenames in os.walk('registration'):
+for dirpath, dirnames, filenames in os.walk('teams'):
     # Ignore dirnames that start with '.'
     for i, dirname in enumerate(dirnames):
         if dirname.startswith('.'): del dirnames[i]
@@ -21,7 +21,7 @@ for dirpath, dirnames, filenames in os.walk('registration'):
             pkg = pkg.replace(os.path.altsep, '.')
         packages.append(pkg)
     elif filenames:
-        prefix = dirpath[13:] # Strip "registration/" or "registration\"
+        prefix = dirpath[13:] # Strip "teams/" or "teams\"
         for f in filenames:
             data_files.append(os.path.join(prefix, f))
 
