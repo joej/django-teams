@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ("cms", "0001_initial"),
+    )
+
     def forwards(self, orm):
         # Adding model 'PersonAttributeBase'
         db.create_table('teams_personattributebase', (
