@@ -10,17 +10,15 @@
 {% block content %}
     <div class="span10">
     	<h4>{{ object.name }}</h4>
-		<ul class="thumbnails">
+		<ul class="inline">
 		{% for squad in object.squad_set.all reversed %}
-			<li class="span2">
-				<div class="thumbnail">
-					{% with image=squad.first_image %}
-						{% if image %}
-							<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-						{% endif %}
-					{% endwith %}
-					<a href="{% url squad_detail squad.slug %}">{{ squad.name }}</a>
-				</div>
+			<li>
+				{% with image=squad.first_image %}
+					{% if image %}
+						<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+					{% endif %}
+				{% endwith %}
+				<a href="{% url squad_detail squad.slug %}">{{ squad.name }}</a>
 			</li>
 		{% endfor %}
 		</ul>
