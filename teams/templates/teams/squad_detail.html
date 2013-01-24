@@ -106,7 +106,7 @@
     <ul class="thumbnails">
     {% for staff in staffs %}
         {% with person=staff.person %}
-        <li class="span3">
+        <li>
             <div class="thumbnail slider">
                 <div>
                     <a href="{% url team_person_detail person.slug %}">
