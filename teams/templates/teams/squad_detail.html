@@ -6,15 +6,16 @@
 {% load sekizai_tags %}
 
 {% block breadcrumb %}
-<li><span class="divider">/</span><a href="{% url team_detail object.team.slug %}">{{ object.team }}</a><span class="divider">/</span></li>
-<li><a href="">{{ object }}</a></li>
+<li><span class="divider">/</span><a href="{% url team_list %}">Teams</a></li>
+<li><span class="divider">/</span><a href="{% url team_detail object.team.slug %}">{{ object.team }}</a></li>
+<li><span class="divider">/</span><a href="">{{ object }}</a></li>
 {% endblock %}
 
 {% block content %}
 <div class="span3">
     <ul class="nav nav-list affix hidden-phone">
         <li>
-            <a href="#top"><i class="icon-chevron-right"></i>Übersicht</a>
+            <a href="#teamtop"><i class="icon-chevron-right"></i>Übersicht</a>
         </li>
         <li>
             <a href="#spieler"><i class="icon-chevron-right"></i>Spieler</a>
@@ -29,73 +30,104 @@
 </div>
 
 <div class="span9">
-    <div class="page-header">
-    	<h1 id="top">{{ object }}</h1>
+    <div id="teamtop" class="page-header">
+    	<h1>{{ object }}</h1>
 	{{ object.html_content|safe }}
     </div>
 
-	{% if players %}
-	<h3 id="spieler">Spieler</h3>
-	
-	<table class="table table-condensed table-striped">
-	   <thead>
-	       <tr>
-	           <th>#</th>
-               <th>Spieler</th>
-               <th>Position</th>
-               <th></th>
-           </tr>
-	   </thead>
-	   <tbody>
-	{% for player in players %}
-		<tr>
-        	{% with person=player.person %}
-            <td><a href="{% url team_person_detail person.slug %}" class="badge">{{ player.number }}</a></td>
-            <td><a href="{% url team_person_detail person.slug %}">{{ person.first_name }} {{ person.last_name }}</a></td>
-            <td><a href="{% url team_person_detail person.slug %}">{% for position in player.positions.all %}{% if not forloop.first %}, {% endif %}{{ position.name }}{% endfor %}</a></td>
-            <td>
-            {% with image=player.person.first_image %}
-                {% if image %}
-                    <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 60x45 crop subject_location=image.image.subject_location %}" />
-                {% endif %}
-            {% endwith %}
-            </td>
-            {% endwith %}
-		</tr>
-	{% endfor %}
-	   </tbody>
-	</table>
-	{% endif %}
+    {% addtoblock "css" %}
+    <style type="text/css">
+        .slider {
+            width:160px;
+            height:120px;
+            background:#eee;
+            overflow:hidden;
+            position:relative;
+        } 
+        .slider > div { 
+            width:160px;
+            height:240px;
+            position:relative;
+            text-align: center;
+        }
+    </style>
+    {% endaddtoblock %}
+
+    {% addtoblock "js" %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".slider").hover(
+                function() {
+                    $("div", this).stop().animate({left: "0px", top: "-120px"});     
+                },
+                function() {
+                    $("div", this).stop().animate({left: "0px", top: "0px"});
+                }
+            );
+        });
+    </script>
+    {% endaddtoblock %}
+
+    {% if players %}
+    <h3 id="spieler">Spieler</h3>
+    <ul class="thumbnails">
+    {% for player in players %}
+        {% with person=player.person %}
+        <li>
+            <div class="thumbnail slider">
+                <div>
+                    <a href="{% url team_person_detail person.slug %}">
+                        {% with image=person.first_image %}
+                        {% if image %}
+                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+                        {% else %}
+                        <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
+                        {% endif %}
+                        {% endwith %}
+                        <p>
+                            {{ person.first_name }} {{ person.last_name }}<br />
+                            <span class="badge">{{ player.number }}</span>
+                            {% for position in player.positions.all %}
+                                {% if not forloop.first %}, {% endif %}{{ position.name }}
+                            {% endfor %}
+                        </p>
+                    </a>
+                </div>
+            </div>
+        </li>
+        {% endwith %}
+    {% endfor %}
+    </ul>
+    {% endif %}
 
 	{% if staffs %}
    <h3 id="betreuer">Betreuer</h3>
 
-   <table class="table table-condensed table-striped">
-       <thead>
-           <tr>
-               <th>Name</th>
-               <th>Funktion</th>
-               <th></th>
-           </tr>
-       </thead>
-       <tbody>
-        {% for staff in staffs %}
-        <tr>
-            {% with person=staff.person %}
-            <td><a href="{% url team_person_detail staff.person.slug %}">{{ person.first_name }} {{ person.last_name }}</a></td>
-            <td><a href="{% url team_person_detail staff.person.slug %}">{{ staff.function }}</a></td>
-            <td>
-            {% with image=staff.person.first_image %}
-                {% if image %}
-                    <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 60x45 crop subject_location=image.image.subject_location %}" />
-                {% endif %}
-            {% endwith %}
-            </td>
-            {% endwith %}
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <ul class="thumbnails">
+    {% for staff in staffs %}
+        {% with person=staff.person %}
+        <li class="span3">
+            <div class="thumbnail slider">
+                <div>
+                    <a href="{% url team_person_detail person.slug %}">
+                        {% with image=person.first_image %}
+                        {% if image %}
+                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+                        {% else %}
+                        <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
+                        {% endif %}
+                        {% endwith %}
+                        <p>
+                            {{ person.first_name }} {{ person.last_name }}<br />
+                            <span class="badge">{{ staff.function }}</span>
+                        </p>
+                    </a>
+                </div>
+            </div>
+        </li>
+        {% endwith %}
+    {% endfor %}
+    </ul>
     {% endif %}
 
 	{% with transfers_in=object.transfer_in.all %}
@@ -104,11 +136,11 @@
     	<h3 id="transfer">Transfers</h3>
 	{% if transfers_in %}
 	   <div class="span4">
-    	<h4>Zuzüge</h4>
-    	<ul class="nav nav-pills">
+    	<h4><i class="icon-arrow-right"></i>&nbsp;Zuzüge</h4>
+    	<ul class="unstyled">
     	{% for transfer in transfers_in %}
     		<li>
-    			<a class="btn-danger" rel="popover" href="{% url team_person_detail transfer.person.slug %}" data-original-title="{% if transfer.t_from %}{{ transfer.t_from }}{% endif %}">{{ transfer.person }}</a>
+    			<a rel="popover" href="{% url team_person_detail transfer.person.slug %}" data-original-title="{% if transfer.t_from %}{{ transfer.t_from }}{% endif %}">{{ transfer.person }}</a>
     		</li>
     	{% endfor %}
     	</ul>
@@ -117,11 +149,11 @@
 
 	{% if transfers_out %}
         <div class="span4 offset1">
-            <h4>Abgänge</h4>
-            <ul class="nav nav-pills">
+            <h4><i class="icon-arrow-left"></i>&nbsp;Abgänge</h4>
+            <ul class="unstyled">
 	{% for transfer in transfers_out %}
                 <li>
-                    <a class="btn-danger" rel="popover" href="{% url team_person_detail transfer.person.slug %}" data-original-title="{% if transfer.t_to %}{{ transfer.t_to }}{% endif %}">{{ transfer.person }}</a>
+                    <a rel="popover" href="{% url team_person_detail transfer.person.slug %}" data-original-title="{% if transfer.t_to %}{{ transfer.t_to }}{% endif %}">{{ transfer.person }}</a>
                 </li>
 	{% endfor %}
             </ul>

@@ -4,6 +4,7 @@
 {% load easy_thumbnail %}
 
 {% block breadcrumb %}
+<li><span class="divider">/</span><a href="{% url team_list %}">Teams</a></li>
 <li><span class="divider">/</span><a href="{% url team_person_detail object.slug %}">{{ object.first_name }} {{ object.last_name }}</a></li>
 {% endblock %}
 

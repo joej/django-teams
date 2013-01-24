@@ -13,12 +13,14 @@
 			<li class="span2">
 				<div class="thumbnail">
 				{% if team.lastsquad %}
+					<a href="{% url squad_detail team.lastsquad.slug %}">
 					{% with image=team.first_image %}
 						{% if image %}
 							<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
 						{% endif %}
 					{% endwith %}
-					<h5><a href="{% url squad_detail team.lastsquad.slug %}">{{ team.name }}</a></h5>
+						<h5>{{ team.name }}</h5>
+					</a>
 				{% else %}
 					{% with image=team.first_image %}
 						{% if image %}
