@@ -11,3 +11,6 @@ PLAYER_BASE_MODEL = getattr(settings, 'TEAM_PLAYER_BASE_MODEL', 'teams.models.Pl
 CONTACT_BASE_MODEL = getattr(settings, 'TEAM_CONTACT_BASE_MODEL', 'teams.models.ContactBase')
 STAFF_BASE_MODEL = getattr(settings, 'TEAM_STAFF_BASE_MODEL', 'teams.models.StaffBase')
 DATE_BASE_MODEL = getattr(settings, 'TEAM_DATE_BASE_MODEL', 'teams.models.DateBase')
+
+MARKUP_LANGUAGE = getattr(settings, 'TEAMS_MARKUP_LANGUAGE', 'html')
+MARKDOWN_EXTENSIONS = getattr(settings, 'TEAMS_MARKDOWN_EXTENSIONS', '')
