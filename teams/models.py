@@ -11,9 +11,13 @@ from teams.base_models import BaseModel, PersonBase, PersonAttributeBase, TeamBa
 
 from settings import PERSON_BASE_MODEL, PERSON_ATTR_BASE_MODEL, TEAM_BASE_MODEL, SQUAD_BASE_MODEL, PLAYER_BASE_MODEL, CONTACT_BASE_MODEL, STAFF_BASE_MODEL, DATE_BASE_MODEL
 
+from filer.fields.image import FilerImageField
+
+
 FORMAT = '%(asctime)-15s: %(message)s'
 logging.basicConfig(format=FORMAT)
 log = logging.getLogger('Models')
+
 
 def get_class( kls ):
     parts = kls.split('.')
@@ -22,6 +26,7 @@ def get_class( kls ):
     for comp in parts[1:]:
         m = getattr(m, comp)            
     return m
+
 
 def get_base_model(BASE_MODEL):
     """Determine the base Model to inherit in the
@@ -37,9 +42,20 @@ def get_base_model(BASE_MODEL):
         log.warning('%s cannot be imported' % BASE_MODEL)
     return get_class(BASE_MODEL)
 
+
 class Position(BaseModel):
     def __unicode__(self):
         return u'%s' % (self.name)
+
+
+class PersonImage(models.Model):
+    person = models.ForeignKey('Person')
+    image = FilerImageField(null=True, blank=True)
+    sort = models.IntegerField(default=0, db_index=True)
+
+    class Meta:
+        ordering = ["sort"]
+
 
 class Person(get_base_model(PERSON_BASE_MODEL)):
     def first_image(self):
@@ -159,25 +175,18 @@ def trigger_process_squad_copy(sender, **kwargs):
 
 post_save.connect(trigger_process_squad_copy, sender=SquadPlayerCopy)
 
-from filer.fields.image import FilerImageField
-
-class PersonImage(models.Model):
-    person = models.ForeignKey(Person)
-    image = FilerImageField(null=True, blank=True)
-    sort = models.IntegerField(default=0, db_index=True)
-
-    class Meta:
-        ordering = ["sort"]
 
 class TeamImage(models.Model):
     team = models.ForeignKey('Team')
     image = FilerImageField(null=True, blank=True)
     sort = models.IntegerField(default=0, db_index=True)
 
+
 class SquadImage(models.Model):
     squad = models.ForeignKey('Squad')
     image = FilerImageField(null=True, blank=True)
     sort = models.IntegerField(default=0, db_index=True)
+
 
 class TransferUpdate(models.Model):
     do_update = models.BooleanField('Delete all transfers and update them afterwards')

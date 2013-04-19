@@ -23,7 +23,7 @@
             <li class="span2">
                 <div class="thumbnail">
                     <div align="center">
-                        <a rel="popover" href="{% url team_person_detail item.person.slug %}" data-original-title="Dressnummer" data-content="#{{ item.number }}">{{ item.person }}</a>
+                        <a rel="popover" href="{% url 'team_person_detail' item.person.slug %}" data-original-title="Dressnummer" data-content="#{{ item.number }}">{{ item.person }}</a>
                     </div>
                 </div>
             </li>

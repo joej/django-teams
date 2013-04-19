@@ -1,11 +1,11 @@
 {% extends "teams/team_base.html" %}
 
 {% load i18n %}
-{% load easy_thumbnail %}
+{% load thumbnail %}
 
 {% block breadcrumb %}
-<li><span class="divider">/</span><a href="{% url team_list %}">Teams</a></li>
-<li><span class="divider">/</span><a href="{% url team_person_detail object.slug %}">{{ object.first_name }} {{ object.last_name }}</a></li>
+<li><span class="divider">/</span><a href="{% url 'team_list' %}">Teams</a></li>
+<li><span class="divider">/</span><a href="{% url 'team_person_detail' object.slug %}">{{ object.first_name }} {{ object.last_name }}</a></li>
 {% endblock %}
 
 {% block content %}
@@ -18,8 +18,8 @@
         {% if image %}
         <ul class="thumbnails">
             <li class="span3">
-                <a href="{% easy_thumbnail image.image.file 500x500 %}" class="thumbnail fancybox">
-                    <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 260x180 crop subject_location=image.image.subject_location %}" />
+                <a href="{% thumbnail image.image.file 500x500 %}" class="thumbnail fancybox">
+                    <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 260x180 crop subject_location=image.image.subject_location %}" />
                 </a>
             </li>
         </ul>
@@ -43,7 +43,7 @@
 		<dl>
 			<dt>als Spieler</dt>
 		{% for squad in players %}
-			<dd><a href="{% url squad_detail squad.slug %}">{{ squad }}</a></dd>
+			<dd><a href="{% url 'squad_detail' squad.slug %}">{{ squad }}</a></dd>
 		{% endfor %}
 		</dl>
 		{% endif %}
@@ -52,7 +52,7 @@
 		<dl>
 			<dt>als Betreuer</dt>
 		{% for squad in staffs %}
-			<dd><a href="{% url squad_detail squad.slug %}">{{ squad }}</a></dd>
+			<dd><a href="{% url 'squad_detail' squad.slug %}">{{ squad }}</a></dd>
 		{% endfor %}
 		</dl>
 		{% endif %}
