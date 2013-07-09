@@ -5,10 +5,12 @@
 {% load chunks %}
 {% load sekizai_tags %}
 
-{% block breadcrumb %}
-<li><span class="divider">/</span><a href="{% url 'team_list' %}">Teams</a></li>
-<li><span class="divider">/</span><a href="{% url 'team_detail' object.team.slug %}">{{ object.team }}</a></li>
-<li><span class="divider">/</span><a href="">{{ object }}</a></li>
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><span class="divider">/</span><a href="{% url 'team_list' %}">Teams</a></li>
+    <li><span class="divider">/</span><a href="{% url 'team_detail' object.team.slug %}">{{ object.team }}</a></li>
+    <li><span class="divider">/</span><a href="">{{ object }}</a></li>
+</ul>
 {% endblock %}
 
 {% block content %}

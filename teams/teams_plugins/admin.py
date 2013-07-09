@@ -13,9 +13,9 @@ from teams.settings import PERSON_BASE_MODEL, SQUAD_BASE_MODEL
 class PersonPlaceholderAdmin(PlaceholderAdmin, PersonAdmin):
     """PersonPlaceholder Admin"""
     fieldsets = ((None, {'fields': (('first_name', 'last_name', 'slug'), 'sortorder',)}),
-                 (_('Content'), {'fields': ('content_placeholder',),
-                         'classes': ('plugin-holder',
-                                     'plugin-holder-nopage')}),
+ #                (_('Content'), {'fields': ('content_placeholder',),
+ #                        'classes': ('plugin-holder',
+ #                                    'plugin-holder-nopage')}),
     )
     
     def save_model(self, request, person, form, change):
@@ -39,9 +39,9 @@ class SquadPlaceholderAdmin(PlaceholderAdmin, SquadAdmin):
                 )
             }),
 
-                 (_('Content'), {'fields': ('content_placeholder',),
-                         'classes': ('plugin-holder',
-                                     'plugin-holder-nopage')}),
+#                 (_('Content'), {'fields': ('content_placeholder',),
+#                         'classes': ('plugin-holder',
+#                                     'plugin-holder-nopage')}),
     )
     prepopulated_fields = {'slug': ('name',)}
     
