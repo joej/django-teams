@@ -1,7 +1,7 @@
 {% extends "teams/team_base.html" %}
 
 {% load i18n %}
-{% load easy_thumbnail %}
+{% load thumbnail %}
 
 {% block breadcrumb %}
 <li><span class="divider">/</span><a href="{% url 'team_list' %}">Teams</a></li>
@@ -28,7 +28,7 @@
 							<a href="{% url 'squad_detail' squad.slug %}">
 							{% with image=squad.first_image %}
 								{% if image %}
-								<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% easy_thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+								<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
 								{% endif %}
 							{% endwith %}
 								<h5>{{ squad.name }}</h5>
