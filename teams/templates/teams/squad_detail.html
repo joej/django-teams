@@ -2,7 +2,6 @@
 
 {% load i18n %}
 {% load thumbnail %}
-{% load chunks %}
 {% load sekizai_tags %}
 
 {% block breadcrumbs %}
@@ -39,15 +38,15 @@
     {% addtoblock "css" %}
     <style type="text/css">
         .slider {
-            width:160px;
             height:120px;
             background:#eee;
             overflow:hidden;
             position:relative;
         } 
         .slider > div { 
-            width:160px;
-            height:240px;
+            top: 3px;
+            background-color: #eee;
+            background-color: rgba(238,238,238,.5);
             position:relative;
             text-align: center;
         }
@@ -59,10 +58,11 @@
         $(document).ready(function() {
             $(".slider").hover(
                 function() {
-                    $("div", this).stop().animate({left: "0px", top: "-120px"});     
+                    var top = -1 * $("div", this).height();
+                    $("div", this).stop().animate({left: "0px", top: top});     
                 },
                 function() {
-                    $("div", this).stop().animate({left: "0px", top: "0px"});
+                    $("div", this).stop().animate({left: "0px", top: "3px"});
                 }
             );
         });
@@ -75,16 +75,16 @@
     {% for player in players %}
         {% with person=player.person %}
         <li>
-            <div class="thumbnail slider">
-                <div>
-                    <a href="{% url 'team_person_detail' person.slug %}">
-                        {% with image=person.first_image %}
-                        {% if image %}
-                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                        {% else %}
-                        <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
-                        {% endif %}
-                        {% endwith %}
+            <a href="{% url 'team_person_detail' person.slug %}">
+                <div class="thumbnail slider">
+                    {% with image=person.first_image %}
+                    {% if image %}
+                    <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+                    {% else %}
+                    <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
+                    {% endif %}
+                    {% endwith %}
+                    <div>
                         <p>
                             {{ person.first_name }} {{ person.last_name }}<br />
                             <span class="badge">{{ player.number }}</span>
@@ -92,9 +92,9 @@
                                 {% if not forloop.first %}, {% endif %}{{ position.name }}
                             {% endfor %}
                         </p>
-                    </a>
+                    </div>
                 </div>
-            </div>
+            </a>
         </li>
         {% endwith %}
     {% endfor %}
