@@ -2,8 +2,10 @@
 
 {% load i18n %}
 
-{% block breadcrumb %}
-<li><span class="divider">/</span><a href="">{{ object.name }}</a></li>
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><span class="divider">&raquo;</span><a href="">{{ object.name }}</a></li>
+</ul>
 {% endblock %}
 
 {% block content %}

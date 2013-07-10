@@ -3,7 +3,10 @@
 {% load i18n %}
 {% load thumbnail %}
 
-{% block breadcrumb %}
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><span class="divider">&raquo;</span><a href="{% url 'team_list' %}">Teams</a></li>
+</ul>
 {% endblock %}
 
 {% block content %}

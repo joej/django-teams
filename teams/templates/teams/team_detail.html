@@ -3,9 +3,11 @@
 {% load i18n %}
 {% load thumbnail %}
 
-{% block breadcrumb %}
-<li><span class="divider">/</span><a href="{% url 'team_list' %}">Teams</a></li>
-<li><span class="divider">/</span><a href="{% url 'team_detail' object.slug %}">{{ object.name }}</a></li>
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+	<li><span class="divider">&raquo;</span><a href="{% url 'team_list' %}">Teams</a></li>
+	<li><span class="divider">&raquo;</span><a href="{% url 'team_detail' object.slug %}">{{ object.name }}</a></li>
+</ul>
 {% endblock %}
 
 {% block content %}
