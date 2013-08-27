@@ -82,6 +82,12 @@ class SquadCopyAdmin(admin.ModelAdmin):
         return False # To remove the 'Save and continue editing' button
 admin.site.register(SquadPlayerCopy, SquadCopyAdmin)
 
+
+class PersonalSponsorAdmin(admin.ModelAdmin):
+    list_display = ('image', 'url', 'person')
+admin.site.register(PersonalSponsor, PersonalSponsorAdmin)
+
+
 class PersonAdmin(admin.ModelAdmin):
     class Media:
         js = ('/static/WYMEditor/jquery/jquery.js',

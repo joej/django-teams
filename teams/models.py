@@ -57,6 +57,12 @@ class PersonImage(models.Model):
         ordering = ["sort"]
 
 
+class PersonalSponsor(models.Model):
+    image = FilerImageField(null=True, blank=True)
+    url = models.URLField()
+    person = models.ForeignKey('Person')
+
+
 class Person(get_base_model(PERSON_BASE_MODEL)):
     def first_image(self):
         try:

@@ -18,13 +18,13 @@ class PersonPlaceholderAdmin(PlaceholderAdmin, PersonAdmin):
  #                                    'plugin-holder-nopage')}),
     )
     
-    def save_model(self, request, person, form, change):
-        """Fill the content field with the interpretation
-        of the placeholder"""
-        context = RequestContext(request)
-        person.content = render_placeholder(person.content_placeholder, context)
-        super(PersonPlaceholderAdmin, self).save_model(
-            request, person, form, change)
+    #def save_model(self, request, person, form, change):
+    #    """Fill the content field with the interpretation
+    #    of the placeholder"""
+    #    context = RequestContext(request)
+    #    person.content = render_placeholder(person.content_placeholder, context)
+    #    super(PersonPlaceholderAdmin, self).save_model(
+    #        request, person, form, change)
 
 admin.site.unregister(Person)
 admin.site.register(Person, PersonPlaceholderAdmin)
@@ -45,13 +45,13 @@ class SquadPlaceholderAdmin(PlaceholderAdmin, SquadAdmin):
     )
     prepopulated_fields = {'slug': ('name',)}
     
-    def save_model(self, request, squad, form, change):
-        """Fill the content field with the interpretation
-        of the placeholder"""
-        context = RequestContext(request)
-        squad.content = render_placeholder(squad.content_placeholder, context)
-        super(SquadPlaceholderAdmin, self).save_model(
-            request, squad, form, change)
+    #def save_model(self, request, squad, form, change):
+    #    """Fill the content field with the interpretation
+    #    of the placeholder"""
+    #    context = RequestContext(request)
+    #    squad.content = render_placeholder(squad.content_placeholder, context)
+    #    super(SquadPlaceholderAdmin, self).save_model(
+    #        request, squad, form, change)
 
 admin.site.unregister(Squad)
 admin.site.register(Squad, SquadPlaceholderAdmin)
