@@ -71,8 +71,10 @@ class Person(get_base_model(PERSON_BASE_MODEL)):
         except IndexError:
             return None
 
+
 class PersonAttribute(get_base_model(PERSON_ATTR_BASE_MODEL)):
     pass
+
 
 class Team(get_base_model(TEAM_BASE_MODEL)):
     def first_image(self):
@@ -82,20 +84,30 @@ class Team(get_base_model(TEAM_BASE_MODEL)):
         except IndexError:
             return None
 
+
 class ExternalTeam(BaseModel):
     url = models.URLField(blank=True, null=True)
     def __unicode__(self):
         return u'%s' % (self.name)
 
+
 class Date(get_base_model(DATE_BASE_MODEL)):
     pass
+
 
 class Player(get_base_model(PLAYER_BASE_MODEL)):
     pass
 
+
 class Contact(get_base_model(CONTACT_BASE_MODEL)):
     pass
-    
+
+
+class RemoteResult(BaseModel):
+    squad = models.ForeignKey('Squad', related_name='results_squad')
+    code = models.TextField(null=True, blank=True)
+
+
 class Staff(get_base_model(STAFF_BASE_MODEL)):
     pass
 
@@ -125,6 +137,7 @@ class Transfer(models.Model):
     t_from = property(_get_from)
     t_to = property(_get_to)
 
+
 class Squad(get_base_model(SQUAD_BASE_MODEL)):
     def transfer_in(self):
         return Transfer.objects.filter(new=self)
@@ -143,11 +156,13 @@ class Squad(get_base_model(SQUAD_BASE_MODEL)):
         except IndexError:
             return None
 
+
 class Season(BaseModel):
     class Meta:
         verbose_name = 'season'
         verbose_name_plural = 'seasons'
         ordering = ['name', ]
+
 
 class SquadPlayerCopy(models.Model):
     source = models.ForeignKey(Squad, related_name='source_copies')
@@ -171,6 +186,7 @@ class SquadPlayerCopy(models.Model):
                                     sortorder=c.sortorder,
                                     address=c.address,
                                     phone=c.phone)
+
 
 # signal for process_gallery and deletion
 def trigger_process_squad_copy(sender, **kwargs):
@@ -228,6 +244,7 @@ class TransferUpdate(models.Model):
                         # remaining players not found in successor -> transfer from oldteam
                         t, created = Transfer.objects.get_or_create(person=p, old=squad, new=None)
             # find transfers for same player with oldteam = None and newteam = None: TODO
+
 
 # signal for process_gallery and deletion
 def trigger_transfer_property(sender, **kwargs):
