@@ -4,12 +4,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import get_model
 from django.utils.html import linebreaks
-from teams.settings import MARKUP_LANGUAGE
-from teams.settings import MARKDOWN_EXTENSIONS
-
-from django.contrib.markup.templatetags.markup import markdown
-from django.contrib.markup.templatetags.markup import textile
-from django.contrib.markup.templatetags.markup import restructuredtext
 
 
 class BaseModel(models.Model):
@@ -39,13 +33,7 @@ class PersonBase(models.Model):
     @property
     def html_content(self):
         """Return the content correctly formatted"""
-        if MARKUP_LANGUAGE == 'markdown':
-            return markdown(self.content, MARKDOWN_EXTENSIONS)
-        elif MARKUP_LANGUAGE == 'textile':
-            return textile(self.content)
-        elif MARKUP_LANGUAGE == 'restructuredtext':
-            return restructuredtext(self.content)
-        elif not '</p>' in self.content:
+        if not '</p>' in self.content:
             return linebreaks(self.content)
         return self.content
 
@@ -112,13 +100,7 @@ class SquadBase(BaseModel):
     @property
     def html_content(self):
         """Return the content correctly formatted"""
-        if MARKUP_LANGUAGE == 'markdown':
-            return markdown(self.content, MARKDOWN_EXTENSIONS)
-        elif MARKUP_LANGUAGE == 'textile':
-            return textile(self.content)
-        elif MARKUP_LANGUAGE == 'restructuredtext':
-            return restructuredtext(self.content)
-        elif not '</p>' in self.content:
+        if not '</p>' in self.content:
             return linebreaks(self.content)
         return self.content
 
