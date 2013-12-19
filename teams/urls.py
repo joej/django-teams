@@ -1,7 +1,8 @@
+from teams.views import PersonDetail, PositionDetail, SquadList, SquadDetail, \
+    TeamList, TeamDetail
+
 from django.conf.urls import patterns, url
-from teams.views import TeamList, TeamDetail
-from teams.views import SquadList, SquadDetail
-from teams.views import PersonDetail, PositionDetail
+
 
 urlpatterns = patterns('teams.views',
     url(r'^$', TeamList.as_view(), name='team_list'),

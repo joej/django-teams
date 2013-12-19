@@ -1,14 +1,14 @@
 """Admin of Teams CMS Plugins"""
+from cms.admin.placeholderadmin import PlaceholderAdmin
+from cms.plugin_rendering import render_placeholder
+from teams.admin import PersonAdmin, SquadAdmin
+from teams.models import Person, Squad
+from teams.settings import PERSON_BASE_MODEL, SQUAD_BASE_MODEL
+
 from django.contrib import admin
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
-from cms.plugin_rendering import render_placeholder
-from cms.admin.placeholderadmin import PlaceholderAdmin
-
-from teams.models import Person, Squad
-from teams.admin import PersonAdmin, SquadAdmin
-from teams.settings import PERSON_BASE_MODEL, SQUAD_BASE_MODEL
 
 class PersonPlaceholderAdmin(PlaceholderAdmin, PersonAdmin):
     """PersonPlaceholder Admin"""

@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from models import *
 
+
 class PersonAttributeInline(admin.TabularInline):
     model = PersonAttribute
     list_display = ('email', 'birthdate', 'height', 'weight')

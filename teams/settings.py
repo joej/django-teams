@@ -1,6 +1,7 @@
 """ Settings of Teams """
 from django.conf import settings
 
+
 PAGINATION = getattr(settings, 'TEAMS_PAGINATION', 10)
 
 PERSON_BASE_MODEL = getattr(settings, 'TEAM_PERSON_BASE_MODEL', 'teams.models.PersonBase')

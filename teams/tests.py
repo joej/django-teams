@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.test import TestCase
-from django.test.client import Client
-from django.core import mail
-from models import Position
-from django.conf import settings
 from datetime import datetime
 import os
+
+from django.conf import settings
+from django.core import mail
+from django.test import TestCase
+from django.test.client import Client
+
+from models import Position
+
 
 class TeamTestCase(TestCase):
 #    fixtures = ['shv_testdata.json']

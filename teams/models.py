@@ -1,17 +1,18 @@
 # coding=utf8
 
 import logging
+from teams.base_models import BaseModel, PersonBase, PersonAttributeBase, \
+    TeamBase, SquadBase, DateBase, SquadPerson, PlayerBase, ContactBase, StaffBase
 
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
-
-from teams.base_models import BaseModel, PersonBase, PersonAttributeBase, TeamBase, SquadBase, DateBase, SquadPerson, PlayerBase, ContactBase, StaffBase
-
-from settings import PERSON_BASE_MODEL, PERSON_ATTR_BASE_MODEL, TEAM_BASE_MODEL, SQUAD_BASE_MODEL, PLAYER_BASE_MODEL, CONTACT_BASE_MODEL, STAFF_BASE_MODEL, DATE_BASE_MODEL
-
 from filer.fields.image import FilerImageField
+
+from settings import PERSON_BASE_MODEL, PERSON_ATTR_BASE_MODEL, TEAM_BASE_MODEL, \
+    SQUAD_BASE_MODEL, PLAYER_BASE_MODEL, CONTACT_BASE_MODEL, STAFF_BASE_MODEL, \
+    DATE_BASE_MODEL
 
 
 FORMAT = '%(asctime)-15s: %(message)s'

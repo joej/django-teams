@@ -1,6 +1,9 @@
-from django import template
-from easy_thumbnails.files import get_thumbnailer
+from teams.models import Person, Squad, SquadPersonImage
+
+from django import template, template
 from django.utils.html import escape
+from easy_thumbnails.files import get_thumbnailer
+
 
 register = template.Library()
 
@@ -12,8 +15,6 @@ def do_person_squad_image(parser, token):
         raise template.TemplateSyntaxError("%r tag requires exactly two arguments, (Person and Squad object)" % token.contents.split()[0])
     return PlayerSquadImage(person, squad)
 
-from django import template
-from teams.models import Person, Squad, SquadPersonImage
 class PlayerSquadImage(template.Node):
     def __init__(self, person, squad):
         self.person = template.Variable(person)

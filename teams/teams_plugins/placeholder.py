@@ -1,11 +1,8 @@
 """Placeholder models for Teams"""
-import inspect
-
 from cms.models.fields import PlaceholderField
 from cms.plugin_rendering import render_placeholder
-
-from teams.base_models import PersonBase
-from teams.base_models import SquadBase
+import inspect
+from teams.base_models import PersonBase, SquadBase
 
 
 class PersonPlaceholder(PersonBase):
