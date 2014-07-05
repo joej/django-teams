@@ -78,6 +78,7 @@ class SquadBase(BaseModel):
         abstract = True
         verbose_name = 'squad'
         verbose_name_plural = 'squads'
+        order_with_respect_to = 'team'
         ordering = ['sortorder', 'name']
     # def save(self, *args, **kwargs):
     #     if self.predecessor == self:

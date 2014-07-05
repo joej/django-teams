@@ -42,8 +42,24 @@ class SquadDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(SquadDetail, self).get_context_data(**kwargs)
-        context['players'] = Player.objects.filter(squad__slug=self.object.slug).select_related()
-        context['staffs'] = Staff.objects.filter(squad__slug=self.object.slug).select_related()
+        players = Player.objects.filter(squad__slug=self.object.slug).select_related()
+        staffs = Staff.objects.filter(squad__slug=self.object.slug).select_related()
+        context['players'] = players
+        context['staffs'] = staffs
+        positions = {}
+        for player in players:
+            for position in player.positions.all():
+                if positions.has_key(position.name):
+                    positions[position.name] += 1
+                else:
+                    positions[position.name] = 1
+        for staff in staffs:
+            if positions.has_key(staff.function):
+                positions[staff.function] += 1
+            else:
+                positions[staff.function] = 1
+        print positions
+        context['positions'] = positions
         return context
 
 

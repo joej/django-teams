@@ -85,6 +85,9 @@ class Team(get_base_model(TEAM_BASE_MODEL)):
         except IndexError:
             return None
 
+    def seasons(self):
+        return Season.objects.filter(squad__team=self).order_by('slug')
+
 
 class ExternalTeam(BaseModel):
     url = models.URLField(blank=True, null=True)
@@ -97,7 +100,15 @@ class Date(get_base_model(DATE_BASE_MODEL)):
 
 
 class Player(get_base_model(PLAYER_BASE_MODEL)):
-    pass
+   def position_part_list(self):
+        seen = set()
+        seen_add = seen.add
+        result = []
+        for p in self.positions.all():
+            for x in p.name.split(' '):
+                if x not in seen and not seen_add(x):
+                    result.append(x)
+        return result
 
 
 class Contact(get_base_model(CONTACT_BASE_MODEL)):
