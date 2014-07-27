@@ -1,15 +1,16 @@
 """Applications hooks for teams.plugins"""
 from cms.app_base import CMSApp
 from cms.apphook_pool import apphook_pool
+from menu import TeamMenu
 
 from django.utils.translation import ugettext_lazy as _
 
 
 #from teams.plugins.settings import APP_MENUS
-class TeamsApphook(CMSApp):
+class TeamsApp(CMSApp):
     """Teamss Apphook"""
-    name = _('Team App Hook')
+    name = _('Team')
     urls = ['teams.urls']
-    #menus = APP_MENUS
+    menus = [TeamMenu]
 
-apphook_pool.register(TeamsApphook)
+apphook_pool.register(TeamsApp)
