@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models import get_model
 from django.utils.html import linebreaks
 from django.utils.translation import ugettext_lazy as _
+from settings import SQUAD_PERSON_BASE_MODEL
+from utils import get_base_model, get_class
 
 
 class BaseModel(models.Model):
@@ -13,6 +15,7 @@ class BaseModel(models.Model):
     class Meta:
         """BaseModels's Meta"""
         abstract = True
+        app_label = 'teams'
 
     def __unicode__(self):
         return u'%s' % (self.name)
@@ -55,6 +58,7 @@ class TeamBase(BaseModel):
 
     class Meta:
         abstract = True
+        app_label = 'teams'
         verbose_name = 'team'
         verbose_name_plural = 'teams'
         ordering = ['sortorder', 'name']
@@ -67,19 +71,20 @@ class SquadBase(BaseModel):
     sortorder = models.SmallIntegerField(default=0)
     predecessor = models.ForeignKey('self', related_name='predecessor_set', null=True, blank=True)
     successor = models.ForeignKey('self', related_name='successor_set', null=True, blank=True)
-    team = models.ForeignKey('Team', null=True, related_name='squad_set')
+    team = models.ForeignKey('Team', null=True, related_name="%(app_label)s_%(class)s_related")
     season = models.ForeignKey('Season')
-    players = models.ManyToManyField('Person', related_name='player_squad', through='Player')
-    staff = models.ManyToManyField('Person', related_name='staff_squad', through='Staff')
-    contacts = models.ManyToManyField('Person', related_name='contact_squad', through='Contact')
+    players = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_players_related", through='Player')
+    staff = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_staff_related", through='Staff')
+    contacts = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_contact_related", through='Contact')
     content = models.TextField(_('content'))
 
     class Meta:
         abstract = True
+        app_label = 'teams'
         verbose_name = 'squad'
         verbose_name_plural = 'squads'
         order_with_respect_to = 'team'
-        ordering = ['sortorder', 'name']
+        ordering = ['team', 'season', 'sortorder', 'name']
     # def save(self, *args, **kwargs):
     #     if self.predecessor == self:
     #         self.predecessor = None
@@ -128,39 +133,45 @@ class SquadPerson(models.Model):
     squad = models.ForeignKey('Squad', related_name='%(app_label)s_%(class)s_squad')
     date_joined = models.ForeignKey('Date', related_name='%(app_label)s_%(class)s_date_joined', null=True, blank=True)
     date_left = models.ForeignKey('Date', related_name='%(app_label)s_%(class)s_date_left', null=True, blank=True)
+    sortorder = models.SmallIntegerField(default=0)
 
     class Meta:
+        app_label = 'teams'
         abstract = True
+        ordering = ['sortorder']
 
 
-class PlayerBase(SquadPerson):
+class Player(get_base_model(SQUAD_PERSON_BASE_MODEL)):
     number = models.SmallIntegerField()
     positions = models.ManyToManyField('Position')
 
     class Meta:
-        abstract = True
-        ordering = ['squad', 'number', 'person']
+        ordering = ['number', 'sortorder', 'person']
+
+    def position_part_list(self):
+        seen = set()
+        seen_add = seen.add
+        result = []
+        for p in self.positions.all():
+            for x in p.name.split(' '):
+                if x not in seen and not seen_add(x):
+                    result.append(x)
+        return result
 
     def __unicode__(self):
         return u'%s %s %d' % (self.squad, self.person, self.number)
 
 
-class ContactBase(SquadPerson):
-    sortorder = models.SmallIntegerField(default=0)
+class Contact(get_base_model(SQUAD_PERSON_BASE_MODEL)):
     address = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=15, null=True, blank=True)
 
-    class Meta:
-        abstract = True
 
-
-class StaffBase(SquadPerson):
-    sortorder = models.SmallIntegerField(default=0)
+class Staff(get_base_model(SQUAD_PERSON_BASE_MODEL)):
     function = models.CharField(max_length=50)
 
     class Meta:
-        abstract = True
-        ordering = ['squad', 'sortorder', 'person']
+        ordering = ['sortorder', 'person']
 
     def __unicode__(self):
         return u'%s %s %s' % (self.squad, self.person, self.function)

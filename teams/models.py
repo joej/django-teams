@@ -1,47 +1,18 @@
 # coding=utf8
 
-import logging
 from teams.base_models import BaseModel, PersonBase, PersonAttributeBase, \
-    TeamBase, SquadBase, DateBase, SquadPerson, PlayerBase, ContactBase, StaffBase
+    TeamBase, SquadBase, DateBase
+from teams.base_models import Player, Contact, Staff
 
 from django.db import models
 from django.db.models.signals import post_save
-from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
 from filer.fields.image import FilerImageField
 
 from settings import PERSON_BASE_MODEL, PERSON_ATTR_BASE_MODEL, TEAM_BASE_MODEL, \
     SQUAD_BASE_MODEL, PLAYER_BASE_MODEL, CONTACT_BASE_MODEL, STAFF_BASE_MODEL, \
     DATE_BASE_MODEL
-
-
-FORMAT = '%(asctime)-15s: %(message)s'
-logging.basicConfig(format=FORMAT)
-log = logging.getLogger('Models')
-
-
-def get_class( kls ):
-    parts = kls.split('.')
-    module = ".".join(parts[:-1])
-    m = import_module( module )
-    for comp in parts[1:]:
-        m = getattr(m, comp)            
-    return m
-
-
-def get_base_model(BASE_MODEL):
-    """Determine the base Model to inherit in the
-    Entry Model, this allows to overload it."""
-
-    dot = BASE_MODEL.rindex('.')
-    module_name = BASE_MODEL[:dot]
-    class_name = BASE_MODEL[dot + 1:]
-    try:
-        _class = getattr(import_module(module_name), class_name)
-        return _class
-    except (ImportError, AttributeError):
-        log.warning('%s cannot be imported' % BASE_MODEL)
-    return get_class(BASE_MODEL)
+from utils import get_base_model, get_class
 
 
 class Position(BaseModel):
@@ -98,31 +69,9 @@ class ExternalTeam(BaseModel):
 class Date(get_base_model(DATE_BASE_MODEL)):
     pass
 
-
-class Player(get_base_model(PLAYER_BASE_MODEL)):
-   def position_part_list(self):
-        seen = set()
-        seen_add = seen.add
-        result = []
-        for p in self.positions.all():
-            for x in p.name.split(' '):
-                if x not in seen and not seen_add(x):
-                    result.append(x)
-        return result
-
-
-class Contact(get_base_model(CONTACT_BASE_MODEL)):
-    pass
-
-
 class RemoteResult(BaseModel):
     squad = models.ForeignKey('Squad', related_name='results_squad')
     code = models.TextField(null=True, blank=True)
-
-
-class Staff(get_base_model(STAFF_BASE_MODEL)):
-    pass
-
 
 class Transfer(models.Model):
     person = models.ForeignKey(Person)
@@ -151,6 +100,9 @@ class Transfer(models.Model):
 
 
 class Squad(get_base_model(SQUAD_BASE_MODEL)):
+    class  Meta:
+        app_label = 'teams'
+
     def transfer_in(self):
         return Transfer.objects.filter(new=self)
     def transfer_out(self):

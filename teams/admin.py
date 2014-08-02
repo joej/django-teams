@@ -80,8 +80,8 @@ class SquadAdmin(admin.ModelAdmin):
     )
     inlines = (PlayerInline, StaffInline, ContactInline, ResultInline)
     #filter_horizontal = ('images', 'calendars')
-    prepopulated_fields = {'slug': ('name',)}
-    list_display = ('slug', 'name', 'sortorder', 'team')
+    prepopulated_fields = {'slug': ('season', 'team', 'name')}
+    list_display = ('slug', 'name', 'team', 'season', 'sortorder')
 admin.site.register(Squad, SquadAdmin)
 
 
