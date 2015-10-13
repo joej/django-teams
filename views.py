@@ -1,9 +1,3 @@
-from django.conf import settings
-from django.db.models.signals import post_save, post_delete
-from django.shortcuts import redirect, render_to_response, get_object_or_404
-from django.template import RequestContext
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_headers
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
