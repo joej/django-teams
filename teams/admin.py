@@ -1,7 +1,12 @@
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 
 from models import *
+
+class ContactInline(admin.TabularInline):
+    model = Contact
+    extra = 1
+    list_display = ('person', 'value', 'sortorder')
+    raw_id_fields = ('person',)
 
 
 class PersonAttributeInline(admin.TabularInline):
@@ -24,129 +29,73 @@ class StaffInline(admin.TabularInline):
     raw_id_fields = ('person',)
 
 
-class ContactInline(admin.TabularInline):
-    model = Contact
+class PersonalSponsorInline(admin.TabularInline):
+    model = PersonalSponsor
     extra = 1
-    list_display = ('person', 'value', 'sortorder')
+    list_display = ('image', 'url', 'person')
     raw_id_fields = ('person',)
 
 
-class ResultInline(admin.TabularInline):
-    model = RemoteResult
-    extra = 1
-    list_display = ('name', )
-
-
 class TeamAdmin(admin.ModelAdmin):
-    class Media:
-        js = ('/static/WYMEditor/jquery/jquery.js',
-            '/static/WYMEditor/wymeditor/jquery.wymeditor.pack.js',
-            '/static/WYMEditor/wymeditor/admin_textarea.js')
-        css = {
-            "all": ("/static/WYMEditor/wymeditor/skins/default/skin.css",)
-        }
-
     fieldsets = (
         (None, {
             'fields': (
                     ('name', 'slug'),
                     ('sortorder'),
-                    'lastsquad'
+                    'lastsquad',
+                    'images'
                 )
             }),
     )
-    prepopulated_fields = {'slug': ('name',)}
+    filter_horizontal = ('images',)
     list_display = ('slug', 'name', 'sortorder')
+    prepopulated_fields = {'slug': ('name',)}
 admin.site.register(Team, TeamAdmin)
 
 
 class SquadAdmin(admin.ModelAdmin):
-    class Media:
-        js = ('/static/WYMEditor/jquery/jquery.js',
-            '/static/WYMEditor/wymeditor/jquery.wymeditor.pack.js',
-            '/static/WYMEditor/wymeditor/admin_textarea.js')
-        css = {
-            "all": ("/static/WYMEditor/wymeditor/skins/default/skin.css",)
-        }
-
     fieldsets = (
         (None, {
             'fields': (
                     ('name', 'slug', 'team', 'season'),
                     ('sortorder'),
                     ('predecessor', 'successor'),
+                    'images'
                 )
             }),
     )
-    inlines = (PlayerInline, StaffInline, ContactInline, ResultInline)
-    #filter_horizontal = ('images', 'calendars')
+    inlines = (PlayerInline, StaffInline, ContactInline)
+    filter_horizontal = ('images', )
     prepopulated_fields = {'slug': ('season', 'team', 'name')}
     list_display = ('slug', 'name', 'team', 'season', 'sortorder')
 admin.site.register(Squad, SquadAdmin)
 
 
-class TransferUpdateAdmin(admin.ModelAdmin):
-    def has_change_permission(self, request, obj=None):
-        return False # To remove the 'Save and continue editing' button
-admin.site.register(TransferUpdate, TransferUpdateAdmin)
-
-
-class SquadCopyAdmin(admin.ModelAdmin):
-    def has_change_permission(self, request, obj=None):
-        return False # To remove the 'Save and continue editing' button
-admin.site.register(SquadPlayerCopy, SquadCopyAdmin)
-
-
-class PersonalSponsorAdmin(admin.ModelAdmin):
-    list_display = ('image', 'url', 'person')
-admin.site.register(PersonalSponsor, PersonalSponsorAdmin)
+#class PersonalSponsorAdmin(admin.ModelAdmin):
+#    list_display = ('image', 'url', 'person')
+#admin.site.register(PersonalSponsor, PersonalSponsorAdmin)
 
 
 class PersonAdmin(admin.ModelAdmin):
-    class Media:
-        js = ('/static/WYMEditor/jquery/jquery.js',
-            '/static/WYMEditor/wymeditor/jquery.wymeditor.pack.js',
-            '/static/WYMEditor/wymeditor/admin_textarea.js')
-        css = {
-            "all": ("/static/WYMEditor/wymeditor/skins/default/skin.css",)
-        }
-
     prepopulated_fields = {'slug': ('first_name', 'last_name')}
     fieldsets = (
         (None, {
             'fields': (
                 ('first_name', 'last_name', 'slug'),
-                'sortorder',
+                'images'
             )
         }),
     )
+    list_display = ('slug', 'first_name', 'last_name')
     inlines = (PersonAttributeInline, PlayerInline, StaffInline)
+    filter_horizontal = ('images',)
     search_fields = ('first_name', 'last_name')
-    list_display = ('slug', 'first_name', 'last_name', 'sortorder')
 admin.site.register(Person, PersonAdmin)
-
-
-class RemoteResultAdmin(admin.ModelAdmin):
-    list_display = ('name', )
-    prepopulated_fields = {'slug': ('name',)}
-admin.site.register(RemoteResult, RemoteResultAdmin)        
 
 
 class DateAdmin(admin.ModelAdmin):
     list_display = ('datum', 'name')
 admin.site.register(Date, DateAdmin)
-
-
-class TransferAdmin(admin.ModelAdmin):
-    raw_id_fields = ('person', )
-    list_display = ('person', 'old', 'oldextern', 'new', 'newextern')
-admin.site.register(Transfer, TransferAdmin)
-
-
-class ExternalTeamAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'url')
-    prepopulated_fields = {'slug': ('name',)}
-admin.site.register(ExternalTeam, ExternalTeamAdmin)
 
 
 class PositionAdmin(admin.ModelAdmin):
@@ -161,16 +110,6 @@ class SeasonAdmin(admin.ModelAdmin):
 admin.site.register(Season, SeasonAdmin)
 
 
-class TeamImageAdmin(admin.ModelAdmin):
-    list_display = ('team', 'image', 'sort')
-admin.site.register(TeamImage, TeamImageAdmin)
-
-
-class SquadImageAdmin(admin.ModelAdmin):
-    list_display = ('squad', 'image', 'sort')
-admin.site.register(SquadImage, SquadImageAdmin)
-
-
-class PersonImageAdmin(admin.ModelAdmin):
-    list_display = ('person', 'image', 'sort')
-admin.site.register(PersonImage, PersonImageAdmin)
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ('image', 'sort')
+admin.site.register(Image, ImageAdmin)

@@ -1,32 +1,100 @@
 # coding=utf8
 
-from teams.base_models import BaseModel, PersonBase, PersonAttributeBase, \
-    TeamBase, SquadBase, DateBase
-from teams.base_models import Player, Contact, Staff
-
 from django.db import models
-from django.db.models.signals import post_save
-from django.utils.translation import ugettext_lazy as _
 from filer.fields.image import FilerImageField
+from django.utils.translation import ugettext_lazy as _
 
-from settings import PERSON_BASE_MODEL, PERSON_ATTR_BASE_MODEL, TEAM_BASE_MODEL, \
-    SQUAD_BASE_MODEL, PLAYER_BASE_MODEL, CONTACT_BASE_MODEL, STAFF_BASE_MODEL, \
-    DATE_BASE_MODEL
-from utils import get_base_model, get_class
+class BaseModel(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField()
 
+    class Meta:
+        """BaseModels's Meta"""
+        abstract = True
 
-class Position(BaseModel):
     def __unicode__(self):
         return u'%s' % (self.name)
 
 
-class PersonImage(models.Model):
-    person = models.ForeignKey('Person')
-    image = FilerImageField(null=True, blank=True)
+class ImageBaseModel(BaseModel):
+    images = models.ManyToManyField('Image', blank=True)
+
+    class Meta:
+        """BaseModels's Meta"""
+        abstract = True
+
+    def first_image(self):
+        try:
+            return Image.objects.filter(team=self).order_by('sort')[0].image
+        except IndexError:
+            return None
+
+    def __unicode__(self):
+        return u'%s' % (self.name)
+
+
+class Image(models.Model):
+    image = FilerImageField(null=False, blank=False)
     sort = models.IntegerField(default=0, db_index=True)
 
     class Meta:
         ordering = ["sort"]
+
+    def __unicode__(self):
+        return u'%s | %s' % (self.image, self.sort)
+
+class SquadPerson(models.Model):
+    date_joined = models.ForeignKey('Date', related_name='%(app_label)s_%(class)s_date_joined', null=True, blank=True)
+    date_left = models.ForeignKey('Date', related_name='%(app_label)s_%(class)s_date_left', null=True, blank=True)
+    person = models.ForeignKey('Person', related_name='%(app_label)s_%(class)s_person')
+    sortorder = models.SmallIntegerField(default=0)
+    squad = models.ForeignKey('Squad', related_name='%(app_label)s_%(class)s_squad')
+
+    class Meta:
+        ordering = ['sortorder']
+
+
+class Player(SquadPerson):
+    number = models.SmallIntegerField()
+    positions = models.ManyToManyField('Position')
+
+    class Meta:
+        ordering = ['number', 'sortorder', 'person']
+
+    def position_part_list(self):
+        seen = set()
+        seen_add = seen.add
+        result = []
+        for p in self.positions.all():
+            for x in p.name.split(' '):
+                if x not in seen and not seen_add(x):
+                    result.append(x)
+        return result
+
+    def __unicode__(self):
+        return u'%s %s %d' % (self.squad, self.person, self.number)
+
+
+class Contact(SquadPerson):
+    address = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+
+
+class Staff(SquadPerson):
+    function = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ['sortorder', 'person']
+
+    def __unicode__(self):
+        return u'%s %s %s' % (self.squad, self.person, self.function)
+
+
+class Position(BaseModel):
+    pass
+
+    class Meta:
+        pass
 
 
 class PersonalSponsor(models.Model):
@@ -35,78 +103,79 @@ class PersonalSponsor(models.Model):
     person = models.ForeignKey('Person')
 
 
-class Person(get_base_model(PERSON_BASE_MODEL)):
-    def first_image(self):
-        try:
-            return PersonImage.objects.filter(person=self).\
-                order_by('sort')[0].image
-        except IndexError:
-            return None
+class Person(models.Model):
+    content = models.TextField(_('content'))
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    images = models.ManyToManyField('Image', blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
+    slug = models.SlugField()
+
+    class Meta:
+        """Person's Meta"""
+        ordering = ['slug']
+
+    def __unicode__(self):
+        return u'%s %s' % (self.first_name, self.last_name)
 
 
-class PersonAttribute(get_base_model(PERSON_ATTR_BASE_MODEL)):
-    pass
+class PersonAttribute(models.Model):
+    birthdate = models.DateField(blank=True, null=True)
+    email = models.EmailField(_('e-mail address'), blank=True)
+    height = models.PositiveSmallIntegerField(blank=True, null=True)
+    person = models.OneToOneField('Person', related_name='attributes')
+    weight = models.PositiveSmallIntegerField(blank=True, null=True)
 
 
-class Team(get_base_model(TEAM_BASE_MODEL)):
-    def first_image(self):
-        try:
-            return TeamImage.objects.filter(team=self).\
-                order_by('sort')[0].image
-        except IndexError:
-            return None
+class Team(ImageBaseModel):
+    lastsquad = models.ForeignKey('Squad', blank=True, null=True, related_name='lastteam_set')
+    sortorder = models.SmallIntegerField(default=0)
+
+    class Meta:
+        verbose_name = 'team'
+        verbose_name_plural = 'teams'
+        ordering = ['sortorder', 'slug']
+
+    def __unicode__(self):
+        return u'%s' % self.name
 
     def seasons(self):
         return Season.objects.filter(squad__team=self).order_by('slug')
 
 
-class ExternalTeam(BaseModel):
-    url = models.URLField(blank=True, null=True)
-    def __unicode__(self):
-        return u'%s' % (self.name)
+class Date(models.Model):
+    datum = models.DateField()
+    name = models.CharField(max_length=50, blank=True)
 
-
-class Date(get_base_model(DATE_BASE_MODEL)):
-    pass
-
-class RemoteResult(BaseModel):
-    squad = models.ForeignKey('Squad', related_name='results_squad')
-    code = models.TextField(null=True, blank=True)
-
-class Transfer(models.Model):
-    person = models.ForeignKey(Person)
-    old = models.ForeignKey('Squad', related_name='leaving', blank=True, null=True)
-    oldextern = models.ForeignKey(ExternalTeam, related_name='leaving_ext', blank=True, null=True)
-    new = models.ForeignKey('Squad', related_name='joining', blank=True, null=True)
-    newextern = models.ForeignKey(ExternalTeam, related_name='joining_ext', blank=True, null=True)
     class Meta:
-        ordering = ['person']
-    def _get_from(self):
-        if not self.oldextern is None:
-            return self.oldextern
-        if self.old is None:
-            return ''
-        return self.old
-    def _get_to(self):
-        if not self.newextern is None:
-            return self.newextern
-        if self.new is None:
-            return ''
-        return self.new
+        """DateBase's Meta"""
+        pass
+
     def __unicode__(self):
-        return u'%s (%s - %s)' % (self.person, self.t_from, self.t_to)
-    t_from = property(_get_from)
-    t_to = property(_get_to)
+        if self.name:
+            return u'%s | %s' % (self.name, self.datum)
+        return u'%s' % (self.datum)
 
 
-class Squad(get_base_model(SQUAD_BASE_MODEL)):
-    class  Meta:
-        app_label = 'teams'
+class Squad(ImageBaseModel):
+    content = models.TextField(_('content'))
+    contacts = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_contact_related", through='Contact')
+    players = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_players_related", through='Player')
+    predecessor = models.ForeignKey('self', related_name='predecessor_set', null=True, blank=True)
+    season = models.ForeignKey('Season')
+    sortorder = models.SmallIntegerField(default=0)
+    staff = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_staff_related", through='Staff')
+    successor = models.ForeignKey('self', related_name='successor_set', null=True, blank=True)
+    team = models.ForeignKey('Team', null=True, related_name="%(app_label)s_%(class)s_related")
 
-    def transfer_in(self):
-        return Transfer.objects.filter(new=self)
-    def transfer_out(self):
-        return Transfer.objects.filter(old=self)
+    class Meta:
+        verbose_name = 'squad'
+        verbose_name_plural = 'squads'
+        order_with_respect_to = 'team'
+        ordering = ['team', 'season', 'sortorder', 'slug']
+
+    def __unicode__(self):
+        return u'%s - %s (%s)' % (self.team.name, self.name, self.season)
+
     def splayers(self):
         return Player.objects.filter(squad=self).order_by('number')
     def scontacts(self):
@@ -115,7 +184,7 @@ class Squad(get_base_model(SQUAD_BASE_MODEL)):
         return Staff.objects.filter(squad=self).order_by('sortorder')
     def first_image(self):
         try:
-            return SquadImage.objects.filter(squad=self).\
+            return Image.objects.filter(squad=self).\
                 order_by('sort')[0].image
         except IndexError:
             return None
@@ -127,94 +196,3 @@ class Season(BaseModel):
         verbose_name_plural = 'seasons'
         ordering = ['name', ]
 
-
-class SquadPlayerCopy(models.Model):
-    source = models.ForeignKey(Squad, related_name='source_copies')
-    target = models.ForeignKey(Squad, related_name='target_copies')
-    def process(self):
-        for p in Player.objects.filter(squad=self.source):
-            obj, created = Player.objects.get_or_create(person=p.person, 
-                                    squad=self.target, 
-                                    number=p.number)
-            for pos in p.positions.all():
-                obj.positions.add(pos)
-            obj.save()
-        for s in Staff.objects.filter(squad=self.source):
-            obj, created = Staff.objects.get_or_create(person=s.person,
-                                    squad=self.target,
-                                    sortorder=s.sortorder,
-                                    function=s.function)
-        for c in Contact.objects.filter(squad=self.source):
-            obj, created = Contact.objects.get_or_create(person=c.person,
-                                    squad=self.target,
-                                    sortorder=c.sortorder,
-                                    address=c.address,
-                                    phone=c.phone)
-
-
-# signal for process_gallery and deletion
-def trigger_process_squad_copy(sender, **kwargs):
-    instance = kwargs.get('instance', None)
-    if instance is not None:
-        instance.process()
-        instance.delete()
-
-post_save.connect(trigger_process_squad_copy, sender=SquadPlayerCopy)
-
-
-class TeamImage(models.Model):
-    team = models.ForeignKey('Team')
-    image = FilerImageField(null=True, blank=True)
-    sort = models.IntegerField(default=0, db_index=True)
-
-
-class SquadImage(models.Model):
-    squad = models.ForeignKey('Squad')
-    image = FilerImageField(null=True, blank=True)
-    sort = models.IntegerField(default=0, db_index=True)
-
-
-class TransferUpdate(models.Model):
-    do_update = models.BooleanField('Delete all transfers and update them afterwards')
-    def do_update(self):
-        if self.do_update:
-            for obj in Transfer.objects.all():
-                obj.delete()
-            for squad in Squad.objects.all():
-                players = {}
-                for p in squad.players.all():
-                    players[p.slug] = p
-                #person, newteam, oldteam
-                pre = squad.predecessor
-                if not pre is None:
-                    for p in pre.players.all():
-                        if p.slug in players:
-                            del players[p.slug]
-                        else:
-                            # not found in current players -> transfer from oldteam
-                            t, created = Transfer.objects.get_or_create(person=p, old=pre, new=None)
-                    for pslug, p in players.items():
-                        # remaining players not found in predecessor -> transfer to newteam
-                        t, created = Transfer.objects.get_or_create(person=p, old=None, new=squad)
-                suc = squad.successor
-                if not suc is None:
-                    for p in suc.players.all():
-                        if p.slug in players:
-                            del players[p.slug]
-                        else:
-                            # not found in current players -> transfer to successor
-                            t, created = Transfer.objects.get_or_create(person=p, old=None, new=suc)
-                    for pslug, p in players.items():
-                        # remaining players not found in successor -> transfer from oldteam
-                        t, created = Transfer.objects.get_or_create(person=p, old=squad, new=None)
-            # find transfers for same player with oldteam = None and newteam = None: TODO
-
-
-# signal for process_gallery and deletion
-def trigger_transfer_property(sender, **kwargs):
-    instance = kwargs.get('instance', None)
-    if instance is not None:
-        instance.do_update()
-        instance.delete()
-
-post_save.connect(trigger_transfer_property, sender=TransferUpdate)
