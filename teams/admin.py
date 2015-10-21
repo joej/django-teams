@@ -1,6 +1,17 @@
 from django.contrib import admin
 
-from models import *
+from models import Contact
+from models import Image
+from models import Person
+from models import PersonalSponsor
+from models import PersonAttribute
+from models import Player
+from models import Position
+from models import Season
+from models import Squad
+from models import Staff
+from models import Team
+
 
 class ContactInline(admin.TabularInline):
     model = Contact
@@ -92,11 +103,6 @@ class PersonAdmin(admin.ModelAdmin):
     filter_horizontal = ('images',)
     search_fields = ('first_name', 'last_name')
 admin.site.register(Person, PersonAdmin)
-
-
-class DateAdmin(admin.ModelAdmin):
-    list_display = ('datum', 'name')
-admin.site.register(Date, DateAdmin)
 
 
 class PositionAdmin(admin.ModelAdmin):

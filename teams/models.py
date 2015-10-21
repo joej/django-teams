@@ -44,8 +44,6 @@ class Image(models.Model):
         return u'%s | %s' % (self.image, self.sort)
 
 class SquadPerson(models.Model):
-    date_joined = models.ForeignKey('Date', related_name='%(app_label)s_%(class)s_date_joined', null=True, blank=True)
-    date_left = models.ForeignKey('Date', related_name='%(app_label)s_%(class)s_date_left', null=True, blank=True)
     person = models.ForeignKey('Person', related_name='%(app_label)s_%(class)s_person')
     sortorder = models.SmallIntegerField(default=0)
     squad = models.ForeignKey('Squad', related_name='%(app_label)s_%(class)s_squad')
@@ -140,20 +138,6 @@ class Team(ImageBaseModel):
 
     def seasons(self):
         return Season.objects.filter(squad__team=self).order_by('slug')
-
-
-class Date(models.Model):
-    datum = models.DateField()
-    name = models.CharField(max_length=50, blank=True)
-
-    class Meta:
-        """DateBase's Meta"""
-        pass
-
-    def __unicode__(self):
-        if self.name:
-            return u'%s | %s' % (self.name, self.datum)
-        return u'%s' % (self.datum)
 
 
 class Squad(ImageBaseModel):
