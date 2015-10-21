@@ -7,9 +7,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-24">
-            <h3>Mannschaften</h3>
-            {% for squad in object_list %}
-            {% ifchanged squad.season %}<h4>Saison {{ squad.season }}</h4>{% endifchanged %}
+            <h3>Saison {{ object.name }}</h3>
+            {% for squad in object.squad_set.all %}
             <div class="col-md-4">
                 <div class="thumbnail">
                     {% with image=squad.squadimage_set.all|first %}
@@ -17,7 +16,7 @@
                     <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
                     {% endif %}
                     {% endwith %}
-                    <a href="{% url 'teams:squad_detail' squad.slug %}">{{ squad.name }} {{ squad.season }}</a>
+                    <a href="{% url 'teams:squad_detail' squad.slug %}">{{ squad.name }}</a>
                 </div>
             </div>
             {% endfor %}

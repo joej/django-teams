@@ -1,7 +1,13 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from models import Team, Squad, Person, Position, Player, Staff
+from models import Team
+from models import Squad
+from models import Person
+from models import Position
+from models import Player
+from models import Season
+from models import Staff
 
 
 class TeamList(ListView):
@@ -22,6 +28,16 @@ def team_detail(request, team, **kwargs):
         slug=team,
         **kwargs)
 '''
+
+class SeasonList(ListView):
+    model = Season
+
+    def get_query_set(self):
+        return Season.objects.order_by('name')
+
+
+class SeasonDetail(DetailView):
+    model = Season
 
 
 class SquadList(ListView):

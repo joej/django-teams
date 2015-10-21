@@ -16,7 +16,7 @@
         {% for team in object_list %}
 	        <div class="col-md-4">
                 {% if team.lastsquad %}
-                <a href="{% url 'squad_detail' team.lastsquad.slug %}">
+                <a href="{% url 'teams:squad_detail' team.lastsquad.slug %}">
                     {% with image=team.first_image %}
                     {% if image %}
                     <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
