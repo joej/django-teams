@@ -93,6 +93,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
                 ('slug', models.SlugField()),
                 ('content', models.TextField(verbose_name='content')),
+                ('shv_id', models.CharField(max_length=100, blank=True)),
                 ('sortorder', models.SmallIntegerField(default=0)),
                 ('images', models.ManyToManyField(to='teams.Image', blank=True)),
                 ('predecessor', models.ForeignKey(related_name='predecessor_set', blank=True, to='teams.Squad', null=True)),

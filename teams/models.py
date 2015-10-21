@@ -162,6 +162,7 @@ class Squad(ImageBaseModel):
     players = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_players_related", through='Player')
     predecessor = models.ForeignKey('self', related_name='predecessor_set', null=True, blank=True)
     season = models.ForeignKey('Season')
+    shv_id = models.CharField(max_length=100, blank=True)
     sortorder = models.SmallIntegerField(default=0)
     staff = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_staff_related", through='Staff')
     successor = models.ForeignKey('self', related_name='successor_set', null=True, blank=True)
