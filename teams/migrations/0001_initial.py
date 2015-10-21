@@ -24,11 +24,11 @@ class Migration(migrations.Migration):
             name='Image',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('sortorder', models.IntegerField(default=0, db_index=True)),
+                ('sort', models.IntegerField(default=0, db_index=True)),
                 ('image', filer.fields.image.FilerImageField(to='filer.Image')),
             ],
             options={
-                'ordering': ['sortorder'],
+                'ordering': ['sort'],
             },
         ),
         migrations.CreateModel(
@@ -93,7 +93,6 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
                 ('slug', models.SlugField()),
                 ('content', models.TextField(verbose_name='content')),
-                ('shv_id', models.CharField(max_length=30, verbose_name=b'SHV-Id', blank=True)),
                 ('sortorder', models.SmallIntegerField(default=0)),
                 ('images', models.ManyToManyField(to='teams.Image', blank=True)),
                 ('predecessor', models.ForeignKey(related_name='predecessor_set', blank=True, to='teams.Squad', null=True)),
