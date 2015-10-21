@@ -13,7 +13,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-24">
-	        {% for team in object_list %}
+        {% for team in object_list %}
 	        <div class="col-md-4">
                 {% if team.lastsquad %}
                 <a href="{% url 'squad_detail' team.lastsquad.slug %}">
@@ -32,8 +32,8 @@
                 {% endwith %}
                 <h5>{{ team.name }}</h5>
                 {% endif %}
-	        </div>
-	        {% endfor %}
+            </div>
+        {% endfor %}
 		</div>
 	</div>
 </div>
