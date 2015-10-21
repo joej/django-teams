@@ -174,7 +174,10 @@ class Squad(ImageBaseModel):
         ordering = ['team', 'season', 'sortorder', 'slug']
 
     def __unicode__(self):
-        return u'%s - %s (%s)' % (self.team.name, self.name, self.season)
+        if self.team is None:
+            return u'%s (%s)' % (self.name, self.season)
+        else:
+            return u'%s - %s (%s)' % (self.team.name, self.name, self.season)
 
     def splayers(self):
         return Player.objects.filter(squad=self).order_by('number')

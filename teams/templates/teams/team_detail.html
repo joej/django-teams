@@ -11,37 +11,41 @@
 {% endblock %}
 
 {% block content %}
-<div class="span10">
-    <h4>{{ object.name }}</h4>
-    <ul class="nav nav-tabs">
-        {% regroup object.squad_set.all by season as squad_list %}
-        {% for s in squad_list %}
-        <li{% if forloop.last %} class="active"{% endif %}><a href="#{{ s.grouper.slug }}" data-toggle="tab">{{ s.grouper }}</a></li>
-        {% endfor %}
-    </ul>
+<div class="container">
+	<div class="row">
+		<div class="col-md-24">
+		    <h4>{{ object.name }}</h4>
+		    <ul class="nav nav-tabs">
+		        {% regroup object.squad_set.all by season as squad_list %}
+		        {% for s in squad_list %}
+		        <li{% if forloop.last %} class="active"{% endif %}><a href="#{{ s.grouper.slug }}" data-toggle="tab">{{ s.grouper }}</a></li>
+		        {% endfor %}
+		    </ul>
 
-    <div class="tab-content">
-        {% for s in squad_list %}
-        <div class="tab-pane{% if forloop.last %} active{% endif %}" id="{{ s.grouper.slug }}">
-            <ul class="thumbnails">
-                {% for squad in s.list %}
-                <li class="span2">
-                    <div class="thumbnail">
-                        <a href="{% url 'squad_detail' squad.slug %}">
-                            {% with image=squad.first_image %}
-                            {% if image %}
-                            <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                            {% endif %}
-                            {% endwith %}
-                            <h5>{{ squad.name }}</h5>
-                        </a>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endfor %}
-    </div>
+		    <div class="tab-content">
+		        {% for s in squad_list %}
+		        <div class="tab-pane{% if forloop.last %} active{% endif %}" id="{{ s.grouper.slug }}">
+		            <ul class="thumbnails">
+		                {% for squad in s.list %}
+		                <li class="span2">
+		                    <div class="thumbnail">
+		                        <a href="{% url 'squad_detail' squad.slug %}">
+		                            {% with image=squad.first_image %}
+		                            {% if image %}
+		                            <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+		                            {% endif %}
+		                            {% endwith %}
+		                            <h5>{{ squad.name }}</h5>
+		                        </a>
+		                    </div>
+		                </li>
+		                {% endfor %}
+		            </ul>
+		        </div>
+		        {% endfor %}
+		    </div>
+		</div>
+	</div>
 </div>
 {% endblock %}
 No newline at end of file
