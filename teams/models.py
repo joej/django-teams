@@ -4,6 +4,7 @@ from django.db import models
 from filer.fields.image import FilerImageField
 from django.utils.translation import ugettext_lazy as _
 
+
 class BaseModel(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField()
@@ -42,6 +43,7 @@ class Image(models.Model):
 
     def __unicode__(self):
         return u'%s | %s' % (self.image, self.sort)
+
 
 class SquadPerson(models.Model):
     person = models.ForeignKey('Person', related_name='%(app_label)s_%(class)s_person')
