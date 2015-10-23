@@ -75,6 +75,14 @@ class TeamAdmin(admin.ModelAdmin):
 admin.site.register(Team, TeamAdmin)
 
 
+class SquadForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SquadForm, self).__init__(*args, **kwargs)
+        self.fields['successor'].queryset = Squad.objects.filter(team=self.instance.team)
+        self.fields['predecessor'].queryset = Squad.objects.filter(team=self.instance.team)
+
+
 class SquadAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
@@ -88,6 +96,7 @@ class SquadAdmin(admin.ModelAdmin):
             }),
     )
     filter_horizontal = ('images', )
+    form = SquadForm
     inlines = (PlayerInline, StaffInline, ContactInline)
     list_display = ('slug', 'name', 'team', 'season', 'sortorder')
     list_filter = ('season', 'team')
