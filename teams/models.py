@@ -162,16 +162,19 @@ class Squad(ImageBaseModel):
 
     def __unicode__(self):
         if self.team is None:
-            return u'%s (%s)' % (self.name, self.season)
+            return u'(%s) - %s' % (self.season, self.name)
         else:
-            return u'%s - %s (%s)' % (self.team.name, self.name, self.season)
+            return u'(%s) - %s %s' % (self.season, self.team.name, self.name)
 
     def splayers(self):
         return Player.objects.filter(squad=self).order_by('number')
+
     def scontacts(self):
         return Contact.objects.filter(squad=self).order_by('sortorder')
+
     def sstaff(self):
         return Staff.objects.filter(squad=self).order_by('sortorder')
+
     def first_image(self):
         try:
             return Image.objects.filter(squad=self).\

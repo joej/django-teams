@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from django.forms.models import ModelForm
 from models import Contact
 from models import Image
 from models import Person
@@ -47,10 +48,18 @@ class PersonalSponsorInline(admin.TabularInline):
     raw_id_fields = ('person',)
 
 
+class TeamForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(TeamForm, self).__init__(*args, **kwargs)
+        self.fields['lastsquad'].queryset = Squad.objects.filter(team=self.instance)
+
+
 class TeamAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': (
+            'fields':
+                (
                     ('name', 'slug'),
                     ('sortorder'),
                     'lastsquad',
@@ -59,15 +68,18 @@ class TeamAdmin(admin.ModelAdmin):
             }),
     )
     filter_horizontal = ('images',)
+    form = TeamForm
     list_display = ('slug', 'name', 'sortorder')
     prepopulated_fields = {'slug': ('name',)}
+
 admin.site.register(Team, TeamAdmin)
 
 
 class SquadAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            'fields': (
+            'fields':
+                (
                     ('name', 'slug', 'team', 'season'),
                     ('sortorder'),
                     ('predecessor', 'successor'),
@@ -81,11 +93,6 @@ class SquadAdmin(admin.ModelAdmin):
     list_filter = ('season', 'team')
     prepopulated_fields = {'slug': ('season', 'team', 'name')}
 admin.site.register(Squad, SquadAdmin)
-
-
-#class PersonalSponsorAdmin(admin.ModelAdmin):
-#    list_display = ('image', 'url', 'person')
-#admin.site.register(PersonalSponsor, PersonalSponsorAdmin)
 
 
 class PersonAdmin(admin.ModelAdmin):
