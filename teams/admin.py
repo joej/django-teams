@@ -79,8 +79,9 @@ class SquadForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SquadForm, self).__init__(*args, **kwargs)
-        self.fields['successor'].queryset = Squad.objects.filter(team=self.instance.team)
-        self.fields['predecessor'].queryset = Squad.objects.filter(team=self.instance.team)
+        if not self.instance.team is None:
+            self.fields['successor'].queryset = Squad.objects.filter(team=self.instance.team)
+            self.fields['predecessor'].queryset = Squad.objects.filter(team=self.instance.team)
 
 
 class SquadAdmin(admin.ModelAdmin):
