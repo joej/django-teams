@@ -68,7 +68,6 @@ class SquadDetail(DetailView):
                 positions[staff.function] += 1
             else:
                 positions[staff.function] = 1
-        print positions
         context['positions'] = positions
         return context
 
