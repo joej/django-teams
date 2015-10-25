@@ -35,49 +35,13 @@
         <div class="col-md-24">
             <div id="teamtop" class="page-header">
                 <h1>{{ object }}</h1>
-                {{ object.html_content|safe }}
             </div>
-
-            {% addtoblock "css" %}
-            <style type="text/css">
-                .slider {
-                height:120px;
-                background:#eee;
-                overflow:hidden;
-                position:relative;
-                }
-                .slider > div {
-                top: 3px;
-                background-color: #eee;
-                background-color: rgba(238,238,238,.5);
-                position:relative;
-                text-align: center;
-                }
-            </style>
-            {% endaddtoblock %}
-
-            {% addtoblock "js" %}
-            <script type="text/javascript">
-                    $(document).ready(function() {
-                        $(".slider").hover(
-                            function() {
-                                var top = -1 * $("div", this).height();
-                                $("div", this).stop().animate({left: "0px", top: top});
-                            },
-                            function() {
-                                $("div", this).stop().animate({left: "0px", top: "3px"});
-                            }
-                        );
-                    });
-                </script>
-            {% endaddtoblock %}
 
             {% if players %}
             <h3 id="spieler">Spieler</h3>
-            <ul class="thumbnails">
                 {% for player in players %}
                 {% with person=player.person %}
-                <li>
+                <div class="col-md-4">
                     <a href="{% url 'team_person_detail' person.slug %}">
                         <div class="thumbnail slider">
                             {% with image=person.first_image %}
@@ -98,10 +62,9 @@
                             </div>
                         </div>
                     </a>
-                </li>
+                </div>
                 {% endwith %}
                 {% endfor %}
-            </ul>
             {% endif %}
 
             {% if staffs %}
@@ -134,7 +97,7 @@
             </ul>
             {% endif %}
 
-            <ul class="pager span9">
+            <ul class="pager col-md-24">
                 {% with squad=object.predecessor %}
                 {% if squad %}
                 <li class="previous"><a href="{% url 'squad_detail' squad.slug %}">&larr; {{ squad }}</a></li>

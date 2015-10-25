@@ -11,27 +11,30 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page-header">
-        <h1>{{ object.first_name }} {{ object.last_name }}</h1>
-    </div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-24">
 
-    {% with image=object.personimage_set.all|first %}
-    {% if image %}
-    <ul class="thumbnails">
-        <li class="span3">
-            <a href="{% thumbnail image.image.file 500x500 %}" class="thumbnail fancybox">
-                <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 260x180 crop subject_location=image.image.subject_location %}" />
-            </a>
-        </li>
-    </ul>
-    {% endif %}
-    {% endwith %}
-    
-	{% with attributes=object.attributes %}
-	{% include "teams/attributes.html" %}
-	{% endwith %}
+			<div class="page-header">
+				<h1>{{ object.first_name }} {{ object.last_name }}</h1>
+			</div>
 
-	{{ object.html_content|safe }}
+			{% for image in object.images.all %}
+			<div class="col-md-4">
+				<a href="{% thumbnail image.image.file 500x500 %}" class="thumbnail fancybox">
+					<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 260x180 crop subject_location=image.image.subject_location %}" />
+				</a>
+			</div>
+			{% endfor %}
+
+			{% with attributes=object.attributes %}
+			{% include "teams/attributes.html" %}
+			{% endwith %}
+
+			{{ object.html_content|safe }}
+		</div>
+	</div>
+</div>
 {% endblock %}
 
 {% block sidebar %}
