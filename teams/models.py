@@ -18,15 +18,18 @@ class BaseModel(models.Model):
 
 
 class ImageBaseModel(BaseModel):
-    images = models.ManyToManyField('Image', blank=True)
+    images = models.ManyToManyField('Image', blank=True, related_name='%(app_label)s_%(class)s_image')
 
     class Meta:
         """BaseModels's Meta"""
         abstract = True
 
+    def filter_query(self):
+        return Image.objects.filter(image=self)
+
     def first_image(self):
         try:
-            return Image.objects.filter(team=self).order_by('sort')[0].image
+            return self.filter_query().order_by('sort')[0].image
         except IndexError:
             return None
 
@@ -106,13 +109,19 @@ class PersonalSponsor(models.Model):
 class Person(models.Model):
     content = models.TextField(_('content'))
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    images = models.ManyToManyField('Image', blank=True)
+    images = models.ManyToManyField('Image', blank=True, related_name='%(app_label)s_%(class)s_image')
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     slug = models.SlugField()
 
     class Meta:
         """Person's Meta"""
         ordering = ['slug']
+
+    def first_image(self):
+        try:
+            return Image.objects.filter(teams_person_image=self).order_by('sort')[0].image
+        except IndexError:
+            return None
 
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
@@ -137,6 +146,9 @@ class Team(ImageBaseModel):
 
     def __unicode__(self):
         return u'%s' % self.name
+
+    def filter_query(self):
+        return Image.objects.filter(teams_team_image=self)
 
     def seasons(self):
         return Season.objects.filter(squad__team=self).order_by('slug')
@@ -163,8 +175,13 @@ class Squad(ImageBaseModel):
     def __unicode__(self):
         if self.team is None:
             return u'(%s) - %s' % (self.season, self.name)
-        else:
+        elif self.team.name != self.name:
             return u'(%s) - %s %s' % (self.season, self.team.name, self.name)
+        else:
+            return u'(%s) - %s' % (self.season, self.name)
+
+    def filter_query(self):
+        return Image.objects.filter(teams_squad_image=self)
 
     def splayers(self):
         return Player.objects.filter(squad=self).order_by('number')
