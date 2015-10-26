@@ -16,15 +16,13 @@
         <div class="team col-md-24">
 			<h3>{{ object.first_name }} {{ object.last_name }}</h3>
 
-			<ul class="team-list">
-				{% for image in object.images.all %}
-                <li class="col-xs-12 col-sm-6 col-md-4">
-					<a href="{% thumbnail image.image.file 500x500 %}" class="thumbnail fancybox">
-						<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 260x180 crop subject_location=image.image.subject_location %}" />
-					</a>
-				</li>
-				{% endfor %}
-			</ul>
+			{% for image in object.images.all %}
+            <div class="col-xs-12 col-sm-6 col-md-4">
+				<a href="{% thumbnail image.image.file 500x500 %}" class="thumbnail fancybox">
+					<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 260x180 crop subject_location=image.image.subject_location %}" />
+				</a>
+			</div>
+			{% endfor %}
 
 			{% with attributes=object.attributes %}
 			{% include "teams/attributes.html" %}
