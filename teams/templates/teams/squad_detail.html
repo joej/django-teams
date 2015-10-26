@@ -32,18 +32,47 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-24">
-            <div id="teamtop" class="page-header">
-                <h1>{{ object }}</h1>
-            </div>
+        <div class="team col-md-24">
+            <h3>{{ object }}</h3>
 
             {% if players %}
-            <h3 id="spieler">Spieler</h3>
+            <h4 id="spieler">Spieler</h4>
+            <ul class="team-list">
                 {% for player in players %}
                 {% with person=player.person %}
-                <div class="col-md-4">
+                <li class="col-xs-12 col-sm-6 col-md-4">
                     <a href="{% url 'team_person_detail' person.slug %}">
-                        <div class="thumbnail slider">
+                        {% with image=person.first_image %}
+                        {% if image %}
+                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+                        {% else %}
+                        <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
+                        {% endif %}
+                        {% endwith %}
+                        <div>
+                            <p>
+                                {{ person.first_name }} {{ person.last_name }}<br />
+                                <span class="badge">{{ player.number }}</span>
+                                {% for position in player.positions.all %}
+                                {% if not forloop.first %}, {% endif %}{{ position.name }}
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </a>
+                </li>
+                {% endwith %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if staffs %}
+            <h4 id="betreuer">Betreuer</h4>
+            <ul class="team-list">
+                {% for staff in staffs %}
+                {% with person=staff.person %}
+                <li class="col-xs-12 col-sm-6 col-md-4">
+                    <div>
+                        <a href="{% url 'team_person_detail' person.slug %}">
                             {% with image=person.first_image %}
                             {% if image %}
                             <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
@@ -51,45 +80,11 @@
                             <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
                             {% endif %}
                             {% endwith %}
-                            <div>
-                                <p>
-                                    {{ person.first_name }} {{ person.last_name }}<br />
-                                    <span class="badge">{{ player.number }}</span>
-                                    {% for position in player.positions.all %}
-                                    {% if not forloop.first %}, {% endif %}{{ position.name }}
-                                    {% endfor %}
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                {% endwith %}
-                {% endfor %}
-            {% endif %}
-
-            {% if staffs %}
-            <h3 id="betreuer">Betreuer</h3>
-
-            <ul class="thumbnails">
-                {% for staff in staffs %}
-                {% with person=staff.person %}
-                <li>
-                    <div class="thumbnail slider">
-                        <div>
-                            <a href="{% url 'team_person_detail' person.slug %}">
-                                {% with image=person.first_image %}
-                                {% if image %}
-                                <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                                {% else %}
-                                <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
-                                {% endif %}
-                                {% endwith %}
-                                <p>
-                                    {{ person.first_name }} {{ person.last_name }}<br />
-                                    <span class="badge">{{ staff.function }}</span>
-                                </p>
-                            </a>
-                        </div>
+                            <p>
+                                {{ person.first_name }} {{ person.last_name }}<br />
+                                <span class="badge">{{ staff.function }}</span>
+                            </p>
+                        </a>
                     </div>
                 </li>
                 {% endwith %}

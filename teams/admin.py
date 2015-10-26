@@ -116,7 +116,7 @@ class PersonAdmin(admin.ModelAdmin):
         }),
     )
     list_display = ('slug', 'first_name', 'last_name')
-    inlines = (PersonAttributeInline, PlayerInline, StaffInline)
+    inlines = (PersonAttributeInline, PersonalSponsorInline, PlayerInline, StaffInline)
     filter_horizontal = ('images',)
     search_fields = ('first_name', 'last_name')
 admin.site.register(Person, PersonAdmin)

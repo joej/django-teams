@@ -11,30 +11,35 @@
 
 {% block content %}
 <div class="container">
-	<div class="row">
-		<div class="col-md-24">
-        {% for team in object_list %}
-	        <div class="col-md-4">
-                {% if team.lastsquad %}
-                <a href="{% url 'teams:squad_detail' team.lastsquad.slug %}">
-                    {% with image=team.first_image %}
-                    {% if image %}
-                    <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                    {% endif %}
-                    {% endwith %}
-                    <h5>{{ team.name }}</h5>
-                </a>
-                {% else %}
-                {% with image=team.first_image %}
-                {% if image %}
-                <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                {% endif %}
-                {% endwith %}
-                <h5>{{ team.name }}</h5>
-                {% endif %}
-            </div>
-        {% endfor %}
-		</div>
-	</div>
+    <div class="row">
+        <div class="team col-md-24">
+            <h4>Mannschaften</h4>
+            <ul class="team-list">
+                {% for team in object_list %}
+                <li class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="team-cell">
+                        {% if team.lastsquad %}
+                        <a href="{% url 'teams:squad_detail' team.lastsquad.slug %}">
+                            {% with image=team.first_image %}
+                            {% if image %}
+                            <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+                            {% endif %}
+                            {% endwith %}
+                            <h5>{{ team.name }}</h5>
+                        </a>
+                        {% else %}
+                        {% with image=team.first_image %}
+                        {% if image %}
+                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
+                        {% endif %}
+                        {% endwith %}
+                        <h5>{{ team.name }}</h5>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock %}
