@@ -33,9 +33,11 @@
 <div class="container">
     <div class="row">
         <div class="col-md-24">
-            <h3>{{ object }}</h3>
+            <div class="page-header">
+                <h3>{{ object }}</h3>
+            </div>
 
-            {% if object.images %}
+            {% if object.images.all %}
             <div id="carousel-team-generic" class="carousel slide" data-ride="carousel">
                 <!-- Indicators -->
                 <ol class="carousel-indicators">

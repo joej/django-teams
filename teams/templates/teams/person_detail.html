@@ -14,7 +14,9 @@
 <div class="container">
     <div class="row">
         <div class="team col-md-24">
-			<h3>{{ object.first_name }} {{ object.last_name }}</h3>
+			<div class="page-header">
+				<h3>{{ object.first_name }} {{ object.last_name }}</h3>
+			</div>
 
 			{% for image in object.images.all %}
             <div class="col-xs-12 col-sm-6 col-md-4">

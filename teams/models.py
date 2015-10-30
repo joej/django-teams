@@ -174,11 +174,11 @@ class Squad(ImageBaseModel):
 
     def __unicode__(self):
         if self.team is None:
-            return u'(%s) - %s' % (self.season, self.name)
+            return u'%s  - (%s)' % (self.name, self.season)
         elif self.team.name != self.name:
-            return u'(%s) - %s %s' % (self.season, self.team.name, self.name)
+            return u'%s %s - (%s)' % (self.team.name, self.name, self.season)
         else:
-            return u'(%s) - %s' % (self.season, self.name)
+            return u'%s - (%s)' % (self.name, self.season)
 
     def filter_query(self):
         return Image.objects.filter(teams_squad_image=self)
