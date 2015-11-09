@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load cms_tags %}
 {% load i18n %}
 {% load thumbnail %}
 {% load sekizai_tags %}
@@ -36,6 +37,8 @@
             <div class="page-header">
                 <h3>{{ object }}</h3>
             </div>
+
+            {% render_placeholder object.placeholder %}
 
             {% if object.images.all %}
             <div id="carousel-team-generic" class="carousel slide" data-ride="carousel">

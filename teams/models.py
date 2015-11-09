@@ -48,7 +48,7 @@ class Image(models.Model):
 
 
 def instance_placeholder(instance):
-    return 'placeholder_%s' % (instance)
+    return 'placeholder_%s' % (instance.__class__.__name__.lower())
 
 class Placeholder(models.Model):
     placeholder = PlaceholderField(instance_placeholder)
