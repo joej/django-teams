@@ -1,8 +1,9 @@
 # coding=utf8
 
+from cms.models.fields import PlaceholderField
 from django.db import models
-from filer.fields.image import FilerImageField
 from django.utils.translation import ugettext_lazy as _
+from filer.fields.image import FilerImageField
 
 
 class BaseModel(models.Model):
@@ -10,18 +11,16 @@ class BaseModel(models.Model):
     slug = models.SlugField()
 
     class Meta:
-        """BaseModels's Meta"""
         abstract = True
 
     def __unicode__(self):
         return u'%s' % (self.name)
 
 
-class ImageBaseModel(BaseModel):
+class ImageModel(models.Model):
     images = models.ManyToManyField('Image', blank=True, related_name='%(app_label)s_%(class)s_image')
 
     class Meta:
-        """BaseModels's Meta"""
         abstract = True
 
     def filter_query(self):
@@ -46,6 +45,16 @@ class Image(models.Model):
 
     def __unicode__(self):
         return u'%s | %s' % (self.image, self.sort)
+
+
+def instance_placeholder(instance):
+    return 'placeholder_%s' % (instance)
+
+class Placeholder(models.Model):
+    placeholder = PlaceholderField(instance_placeholder)
+
+    class Meta:
+        abstract = True
 
 
 class SquadPerson(models.Model):
@@ -106,10 +115,9 @@ class PersonalSponsor(models.Model):
     person = models.ForeignKey('Person')
 
 
-class Person(models.Model):
+class Person(ImageModel, Placeholder):
     content = models.TextField(_('content'))
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    images = models.ManyToManyField('Image', blank=True, related_name='%(app_label)s_%(class)s_image')
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     slug = models.SlugField()
 
@@ -135,7 +143,7 @@ class PersonAttribute(models.Model):
     weight = models.PositiveSmallIntegerField(blank=True, null=True)
 
 
-class Team(ImageBaseModel):
+class Team(BaseModel, ImageModel, Placeholder):
     lastsquad = models.ForeignKey('Squad', blank=True, null=True, related_name='lastteam_set')
     sortorder = models.SmallIntegerField(default=0)
 
@@ -154,7 +162,7 @@ class Team(ImageBaseModel):
         return Season.objects.filter(squad__team=self).order_by('slug')
 
 
-class Squad(ImageBaseModel):
+class Squad(BaseModel, ImageModel, Placeholder):
     content = models.TextField(_('content'))
     contacts = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_contact_related", through='Contact')
     players = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_players_related", through='Player')
@@ -205,4 +213,3 @@ class Season(BaseModel):
         verbose_name = 'season'
         verbose_name_plural = 'seasons'
         ordering = ['name', ]
-

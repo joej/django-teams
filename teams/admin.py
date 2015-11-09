@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from django.forms.models import ModelForm
 from models import Contact
 from models import Image

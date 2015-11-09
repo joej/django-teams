@@ -2,24 +2,19 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import teams.models
 import filer.fields.image
+import cms.models.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('filer', '0002_auto_20150606_2003'),
+        ('cms', '0012_auto_20150607_2207'),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='Date',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('datum', models.DateField()),
-                ('name', models.CharField(max_length=50, blank=True)),
-            ],
-        ),
         migrations.CreateModel(
             name='Image',
             fields=[
@@ -39,7 +34,8 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(max_length=30, verbose_name='first name', blank=True)),
                 ('last_name', models.CharField(max_length=30, verbose_name='last name', blank=True)),
                 ('slug', models.SlugField()),
-                ('images', models.ManyToManyField(to='teams.Image', blank=True)),
+                ('images', models.ManyToManyField(related_name='teams_person_image', to='teams.Image', blank=True)),
+                ('placeholder', cms.models.fields.PlaceholderField(slotname=teams.models.instance_placeholder, editable=False, to='cms.Placeholder', null=True)),
             ],
             options={
                 'ordering': ['slug'],
@@ -95,7 +91,8 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(verbose_name='content')),
                 ('shv_id', models.CharField(max_length=100, blank=True)),
                 ('sortorder', models.SmallIntegerField(default=0)),
-                ('images', models.ManyToManyField(to='teams.Image', blank=True)),
+                ('images', models.ManyToManyField(related_name='teams_squad_image', to='teams.Image', blank=True)),
+                ('placeholder', cms.models.fields.PlaceholderField(slotname=teams.models.instance_placeholder, editable=False, to='cms.Placeholder', null=True)),
                 ('predecessor', models.ForeignKey(related_name='predecessor_set', blank=True, to='teams.Squad', null=True)),
                 ('season', models.ForeignKey(to='teams.Season')),
                 ('successor', models.ForeignKey(related_name='successor_set', blank=True, to='teams.Squad', null=True)),
@@ -123,8 +120,9 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
                 ('slug', models.SlugField()),
                 ('sortorder', models.SmallIntegerField(default=0)),
-                ('images', models.ManyToManyField(to='teams.Image', blank=True)),
+                ('images', models.ManyToManyField(related_name='teams_team_image', to='teams.Image', blank=True)),
                 ('lastsquad', models.ForeignKey(related_name='lastteam_set', blank=True, to='teams.Squad', null=True)),
+                ('placeholder', cms.models.fields.PlaceholderField(slotname=teams.models.instance_placeholder, editable=False, to='cms.Placeholder', null=True)),
             ],
             options={
                 'ordering': ['sortorder', 'slug'],
@@ -163,16 +161,6 @@ class Migration(migrations.Migration):
                 'ordering': ['sortorder', 'person'],
             },
             bases=('teams.squadperson',),
-        ),
-        migrations.AddField(
-            model_name='squadperson',
-            name='date_joined',
-            field=models.ForeignKey(related_name='teams_squadperson_date_joined', blank=True, to='teams.Date', null=True),
-        ),
-        migrations.AddField(
-            model_name='squadperson',
-            name='date_left',
-            field=models.ForeignKey(related_name='teams_squadperson_date_left', blank=True, to='teams.Date', null=True),
         ),
         migrations.AddField(
             model_name='squadperson',
