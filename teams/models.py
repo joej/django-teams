@@ -17,6 +17,13 @@ class BaseModel(models.Model):
         return u'%s' % (self.name)
 
 
+class Active(models.Model):
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+
 class ImageModel(models.Model):
     images = models.ManyToManyField('Image', blank=True, related_name='%(app_label)s_%(class)s_image')
 
@@ -143,7 +150,7 @@ class PersonAttribute(models.Model):
     weight = models.PositiveSmallIntegerField(blank=True, null=True)
 
 
-class Team(BaseModel, ImageModel, Placeholder):
+class Team(Active, BaseModel, ImageModel, Placeholder):
     lastsquad = models.ForeignKey('Squad', blank=True, null=True, related_name='lastteam_set')
     sortorder = models.SmallIntegerField(default=0)
 
@@ -162,7 +169,7 @@ class Team(BaseModel, ImageModel, Placeholder):
         return Season.objects.filter(squad__team=self).order_by('slug')
 
 
-class Squad(BaseModel, ImageModel, Placeholder):
+class Squad(Active, BaseModel, ImageModel, Placeholder):
     content = models.TextField(_('content'))
     contacts = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_contact_related", through='Contact')
     players = models.ManyToManyField('Person', related_name="%(app_label)s_%(class)s_players_related", through='Player')
