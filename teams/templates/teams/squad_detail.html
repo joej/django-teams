@@ -120,7 +120,7 @@
                                     <h5 class="list-group-item-heading">persönliche{{ total|pluralize:"r," }} Sponsor{{ total|pluralize:"en" }}</h5>
                                     {% endif %}
                                     <a href="{{ sponsor.url }}">
-                                        <img src="{% thumbnail sponsor.image.file 80x60 crop subject_location=image.image.subject_location %}" class="img-responsive" />
+                                        <img src="{% thumbnail sponsor.image.file 80x60 crop='scale' upscale='False' subject_location=image.image.subject_location %}" class="img-responsive" />
                                     </a>
                                     {% endfor %}
                                     {% endwith %}
