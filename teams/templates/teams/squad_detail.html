@@ -112,23 +112,21 @@
                                     {% endfor %}
                                     </p>
                                     </a>
+
+                                    {% with sponsors=person.personalsponsor_set.all %}
+                                    {% with total=sponsors.count %}
+                                    {% for sponsor in sponsors %}
+                                    {% if forloop.first %}
+                                    <h5 class="list-group-item-heading">persönliche{{ total|pluralize:"r," }} Sponsor{{ total|pluralize:"en" }}</h5>
+                                    {% endif %}
+                                    <a href="{{ sponsor.url }}">
+                                        <img src="{% thumbnail sponsor.image.file 80x60 crop subject_location=image.image.subject_location %}" class="img-responsive" />
+                                    </a>
+                                    {% endfor %}
+                                    {% endwith %}
+                                    {% endwith %}
                                 </span>
                             </div>
-
-                            {% with sponsors=person.personalsponsor_set.all %}
-                            {% with total=sponsors.count %}
-                            {% for sponsor in sponsors %}
-                            <div class="list-group-item">
-                                {% if forloop.first %}
-                                <h5 class="list-group-item-heading">persönliche{{ total|pluralize:"r," }} Sponsor{{ total|pluralize:"en" }}</h5>
-                                {% endif %}
-                                <a class="list-group-item-text" href="{{ sponsor.url }}">
-                                    <img class="media-object img-responsive" src="{% thumbnail sponsor.image.image.file 120x60 crop='scale' upscale='False' %}" alt="Sponsor" />
-                                </a>
-                            </div>
-                            {% endfor %}
-                            {% endwith %}
-                            {% endwith %}
                         </div>
                     </div>
                     {% endwith %}
@@ -138,25 +136,33 @@
 
             {% if staffs %}
                 <h4 id="betreuer">Betreuer</h4>
-                {% for staff in staffs %}
-                {% with person=staff.person %}
-                <div class="col-xs-12 col-sm-6 col-md-4">
-                    <a href="{% url 'team_person_detail' person.slug %}">
-                        {% with image=person.first_image %}
-                        {% if image %}
-                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                        {% else %}
-                        <img alt="" src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y&s=120" />
-                        {% endif %}
-                        {% endwith %}
-                        <p>
-                            {{ person.first_name }} {{ person.last_name }}<br />
-                            <span class="badge">{{ staff.function }}</span>
-                        </p>
-                    </a>
+                <div class="grid">
+                    {% for staff in staffs %}
+                    {% with person=staff.person %}
+                    <div class="grid-item col-xs-12 col-sm-6 col-md-4">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <span class="list-group-item-heading">
+                                    <a href="{% url 'team_person_detail' person.slug %}">
+                                    {% with image=person.first_image %}
+                                    {% include 'teams/_person_image.html' %}
+                                    {% endwith %}
+                                    </a>
+                                </span>
+                                <span class="list-group-item-text">
+                                    <a href="{% url 'team_person_detail' person.slug %}">
+                                    <p>
+                                    {{ person.first_name }} {{ person.last_name }}<br />
+                                            <span class="badge">{{ staff.function }}</span>
+                                    </p>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
                 </div>
-                {% endwith %}
-                {% endfor %}
             {% endif %}
 
             {% if object.shv_saison_id and object.shv_group_id %}
