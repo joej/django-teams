@@ -90,6 +90,7 @@ class SquadAdmin(admin.ModelAdmin):
                 (
                     ('name', 'slug', 'team', 'season'),
                     ('sortorder'),
+                    ('shv_saison_id', 'shv_group_id', 'shv_team_id'),
                     ('predecessor', 'successor'),
                     'images'
                 )

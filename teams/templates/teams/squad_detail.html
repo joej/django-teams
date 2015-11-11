@@ -16,7 +16,7 @@
 {% block sidebar %}
 <ul class="nav nav-list affix hidden-phone">
     <li>
-        <a href="#teamtop"><i class="icon-chevron-right"></i>Ãœbersicht</a>
+        <a href="#teamtop"><i class="icon-chevron-right"></i>Übersicht</a>
     </li>
     <li>
         <a href="#spieler"><i class="icon-chevron-right"></i>Spieler</a>
@@ -37,6 +37,18 @@
             <div class="page-header">
                 <h3>{{ object }}</h3>
             </div>
+
+            {% if object.shv_saison_id and object.shv_group_id %}
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#team" aria-controls="team" role="tab" data-toggle="tab">Team</a></li>
+                    <li role="presentation"><a href="#shv" aria-controls="shv" role="tab" data-toggle="tab">Resultate</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="team">
+            {% endif %}
 
             {% render_placeholder object.placeholder %}
 
@@ -72,6 +84,8 @@
                 </a>
             </div>
             {% endif %}
+
+            {% render_placeholder object.placeholder %}
 
             {% if players %}
                 <h4 id="spieler">Spieler</h4>
@@ -111,13 +125,12 @@
                                 <h5 class="list-group-item-heading">persönliche{{ total|pluralize:"r," }} Sponsor{{ total|pluralize:"en" }}</h5>
                                 {% endif %}
                                 <a class="list-group-item-text" href="{{ sponsor.url }}">
-                                    <img class="media-object img-responsive" src="{% thumbnail sponsor.image.image.file 120x60 crop="scale" upscale="False" %}" alt="Sponsor" />
+                                    <img class="media-object img-responsive" src="{% thumbnail sponsor.image.image.file 120x60 crop='scale' upscale='False' %}" alt="Sponsor" />
                                 </a>
                             </div>
                             {% endfor %}
                             {% endwith %}
                             {% endwith %}
-
                         </div>
                     </div>
                     {% endwith %}
@@ -148,6 +161,18 @@
                 {% endfor %}
             {% endif %}
 
+            {% if object.shv_saison_id and object.shv_group_id %}
+                        {% comment %}The end div from above id="main" {% endcomment %}
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="shv">
+                        <iframe frameborder="0" height="520" name="tvz" scrolling="yes" src="http://vvs.handball.ch/vvs/resultate.asp?Gruppe={{ object.shv_group_id }}&amp;Saison={{ object.shv_team_id }}&amp;teamid=" width="640">
+
+                        </iframe>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if object.predecessor or object.successor %}
             <ul class="pager col-md-24">
                 {% with squad=object.predecessor %}
                 {% if squad %}
@@ -160,6 +185,7 @@
                 {% endif %}
                 {% endwith %}
             </ul>
+            {% endif %}
         </div>
     </div>
 </div>
