@@ -65,9 +65,9 @@
                 <div class="carousel-inner" role="listbox">
                     {% for image in object.images.all %}
                     <div class="item{% if forloop.first %} active{% endif %}">
-                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 1140x500 crop subject_location=image.image.subject_location %}"/>
+                        {% include "includes/_image.html" with size="1140x500" instance=image %}
                         <div class="carousel-caption">
-                            {{ image }}
+                            {{ image.image.label }}
                         </div>
                     </div>
                     {% endfor %}
@@ -95,7 +95,7 @@
                             <div class="list-group-item">
                                 <span class="list-group-item-heading">
                                     <a href="{% url 'team_person_detail' person.slug %}">
-                                    {% with image=person.first_image %}
+                                    {% with instance=person.first_image %}
                                     {% include 'teams/_person_image.html' %}
                                     {% endwith %}
                                     </a>

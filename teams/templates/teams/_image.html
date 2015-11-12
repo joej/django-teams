@@ -1,5 +1,0 @@
-{% load thumbnail %}
-
-{% if image %}
-<img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 200x150 crop subject_location=image.image.subject_location %}" class="img-responsive"/>
-{% endif %}

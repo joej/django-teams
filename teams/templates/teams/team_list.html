@@ -21,21 +21,13 @@
                 <li class="col-xs-12 col-sm-6 col-md-4">
                     <div class="team-cell">
                         {% if team.lastsquad %}
-                        <a href="{% url 'teams:squad_detail' team.lastsquad.slug %}">
-                            {% with image=team.first_image %}
-                            {% if image %}
-                            <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                            {% endif %}
-                            {% endwith %}
-                            <h5>{{ team.name }}</h5>
-                        </a>
+                            <a href="{% url 'teams:squad_detail' team.lastsquad.slug %}">
+                                {% include "includes/_image.html" with size="160x120" instance=team.first_image %}
+                                <h5>{{ team.name }}</h5>
+                            </a>
                         {% else %}
-                        {% with image=team.first_image %}
-                        {% if image %}
-                        <img alt="{% if image.alt_text %}{{ image.alt_text }}{% endif %}" src="{% thumbnail image.image.file 160x120 crop subject_location=image.image.subject_location %}" />
-                        {% endif %}
-                        {% endwith %}
-                        <h5>{{ team.name }}</h5>
+                            {% include "includes/_image.html" with size="160x120" instance=team.first_image %}
+                            <h5>{{ team.name }}</h5>
                         {% endif %}
                     </div>
                 </li>
