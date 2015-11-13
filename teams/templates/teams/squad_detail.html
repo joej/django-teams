@@ -95,9 +95,7 @@
                             <div class="list-group-item">
                                 <span class="list-group-item-heading">
                                     <a href="{% url 'team_person_detail' person.slug %}">
-                                    {% with instance=person.first_image %}
-                                    {% include 'teams/_person_image.html' %}
-                                    {% endwith %}
+                                    {% include "includes/_image.html" with size="130x130" instance=person.first_image %}
                                     </a>
                                 </span>
                                 <span class="list-group-item-text">
@@ -144,9 +142,7 @@
                             <div class="list-group-item">
                                 <span class="list-group-item-heading">
                                     <a href="{% url 'team_person_detail' person.slug %}">
-                                    {% with image=person.first_image %}
-                                    {% include 'teams/_person_image.html' %}
-                                    {% endwith %}
+                                    {% include "includes/_image.html" with size="130x130" instance=person.first_image %}
                                     </a>
                                 </span>
                                 <span class="list-group-item-text">
