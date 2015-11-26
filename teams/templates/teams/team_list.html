@@ -22,11 +22,11 @@
                     <div class="team-cell">
                         {% if team.lastsquad %}
                             <a href="{% url 'teams:squad_detail' team.lastsquad.slug %}">
-                                {% include "includes/_image.html" with size="160x120" instance=team.first_image.image %}
+                                {% include "includes/images/_image.html" with size="160x120" instance=team.first_image.image %}
                                 <h5>{{ team.name }}</h5>
                             </a>
                         {% else %}
-                            {% include "includes/_image.html" with size="160x120" instance=team.first_image.image %}
+                            {% include "includes/images/_image.html" with size="160x120" instance=team.first_image.image %}
                             <h5>{{ team.name }}</h5>
                         {% endif %}
                     </div>

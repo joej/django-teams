@@ -65,9 +65,12 @@
                 <div class="carousel-inner" role="listbox">
                     {% for image in object.images.all %}
                     <div class="item{% if forloop.first %} active{% endif %}">
-                        {% include "includes/_image.html" with size="1140x500" instance=image.image %}
+                        {% include "includes/images/_carousel_image.html" with size="1140x500" instance=image.image %}
                         <div class="carousel-caption">
                             {{ image.image.label }}
+                            {% if image.image.description %}
+                            <p>{{ image.image.description }}</p>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
@@ -95,7 +98,7 @@
                             <div class="list-group-item">
                                 <span class="list-group-item-heading">
                                     <a href="{% url 'team_person_detail' person.slug %}">
-                                    {% include "includes/_image.html" with size="130x130" instance=person.first_image.image %}
+                                    {% include "includes/images/_image.html" with size="130x130" instance=person.first_image.image %}
                                     </a>
                                 </span>
                                 <span class="list-group-item-text">
@@ -142,7 +145,7 @@
                             <div class="list-group-item">
                                 <span class="list-group-item-heading">
                                     <a href="{% url 'team_person_detail' person.slug %}">
-                                    {% include "includes/_image.html" with size="130x130" instance=person.first_image.image %}
+                                    {% include "includes/images/_image.html" with size="130x130" instance=person.first_image.image %}
                                     </a>
                                 </span>
                                 <span class="list-group-item-text">
