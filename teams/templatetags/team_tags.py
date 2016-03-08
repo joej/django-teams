@@ -1,4 +1,4 @@
-from teams.models import Person, Squad, SquadPersonImage
+from teams.models import Person, Squad, Image
 
 from django import template, template
 from django.utils.html import escape
@@ -27,8 +27,8 @@ class PlayerSquadImage(template.Node):
         except template.VariableDoesNotExist:
             return ''
         try:
-            image = SquadPersonImage.objects.get(person=person, squad=squad)
-        except SquadPersonImage.DoesNotExist:
+            image = Image.objects.get(person=person, squad=squad)
+        except Image.DoesNotExist:
             pass
         opts = {}
         opts['size'] = (100,100)

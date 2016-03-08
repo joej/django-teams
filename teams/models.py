@@ -186,7 +186,6 @@ class Squad(Active, BaseModel, ImageModel, Placeholder):
     class Meta:
         verbose_name = 'squad'
         verbose_name_plural = 'squads'
-        order_with_respect_to = 'team'
         ordering = ['team', 'season', 'sortorder', 'slug']
 
     def __unicode__(self):
